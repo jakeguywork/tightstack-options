@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>TightStack home page, three options</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1&family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{ --paper:#F6F8FB; --ink:#123156; --muted:#4E6A88; --rule:#D3DEE9; --line:#9FB8D0; }
+*{ box-sizing:border-box; }
+body{ margin:0; background:var(--paper); color:var(--ink); font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:17px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+.wrap{ max-width:64rem; margin:0 auto; padding:4rem clamp(1.25rem,5vw,4rem) 5rem; }
+h1{ font-family:Fraunces,Georgia,serif; font-weight:400; font-variation-settings:"opsz" 144,"SOFT" 30,"WONK" 1; font-size:clamp(2rem,5vw,3.4rem); line-height:1.08; letter-spacing:-.025em; margin:0 0 .75rem; max-width:22ch; text-wrap:balance; }
+.lede{ color:var(--muted); max-width:44rem; margin:0 0 3rem; }
+.label{ font-family:"IBM Plex Mono",monospace; font-size:.75rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0; }
+ol{ list-style:none; margin:0; padding:0; }
+li{ display:grid; grid-template-columns:5rem minmax(0,1fr); gap:1rem 1.5rem; padding:2rem 0; border-top:1px solid var(--rule); align-items:baseline; }
+li:last-child{ border-bottom:1px solid var(--rule); }
+.num{ font-family:Fraunces,Georgia,serif; font-weight:300; font-variation-settings:"opsz" 144,"SOFT" 0,"WONK" 0; font-size:3.2rem; line-height:.9; color:#8FA3B8; letter-spacing:-.03em; }
+h2{ font-family:Fraunces,Georgia,serif; font-weight:400; font-variation-settings:"opsz" 72,"SOFT" 40,"WONK" 1; font-size:1.6rem; margin:0 0 .5rem; letter-spacing:-.01em; }
+h2 a{ color:inherit; text-decoration:none; border-bottom:1px solid var(--line); }
+h2 a:hover{ border-bottom-color:var(--ink); }
+p{ margin:0 0 .75rem; max-width:40rem; text-wrap:pretty; }
+p:last-child{ margin-bottom:0; }
+.entry{ color:var(--muted); }
+.pill{ display:inline-flex; align-items:center; gap:.6em; font-family:"IBM Plex Mono",monospace; font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; text-decoration:none; border:1px solid var(--ink); border-radius:999px; padding:.75em 1.3em; color:var(--ink); margin-top:.75rem; }
+.pill:hover{ background:var(--ink); color:var(--paper); }
+.notes{ margin-top:3rem; font-family:"IBM Plex Mono",monospace; font-size:.8rem; line-height:1.75; color:var(--muted); max-width:44rem; }
+.notes p{ margin:0 0 .6rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="label">TightStack.ca · home page redesign · October 2026</p>
+  <h1>Three ways in. Each one starts with the stack.</h1>
+  <p class="lede">All three open on the mark alone: the exploded stack draws itself, closes up, shrinks to become the dot on the i, and the name prints around it. What differs is the sheet it happens on and what the stack does afterwards.</p>
+
+  <ol>
+    <li>
+      <span class="num">01</span>
+      <div>
+        <h2><a href="1-paper.html">Paper</a></h2>
+        <p>The logo as it was drawn: navy on white, centred, with concentric hairlines inked behind it. The entry plays itself over about three and a half seconds, then the page settles into an editorial layout with large numerals, ruled lists and sticky section labels.</p>
+        <p class="entry">Entry: timed. Plays once per tab session; a return visit gets the short version.</p>
+        <a class="pill" href="1-paper.html">Open option 1</a>
+      </div>
+    </li>
+    <li>
+      <span class="num">02</span>
+      <div>
+        <h2><a href="2-field.html">Field</a></h2>
+        <p>The cyanotype stays: chalk on navy, left-aligned. After the name prints, the stack is the one object on the page. Scroll and it leaves the i, grows, sits beside the list of services and comes apart one plate per service, then closes and lands in the name again at the foot of the page.</p>
+        <p class="entry">Entry: timed, then scroll-driven. The flying stack runs on screens wider than about 900px; phones get a still drawing.</p>
+        <a class="pill" href="2-field.html">Open option 2</a>
+      </div>
+    </li>
+    <li>
+      <span class="num">03</span>
+      <div>
+        <h2><a href="3-sheet.html">Sheet</a></h2>
+        <p>Nothing plays by itself. The first screen is a white sheet with the exploded stack on it, and the visitor's scroll closes it, carries it to the i, prints the name, and then tucks the name into the corner as the sheet turns navy and the site begins. Scroll back up and it all reverses.</p>
+        <p class="entry">Entry: scrubbed by scroll, about three screens' worth. The closest of the three to steven.com.</p>
+        <a class="pill" href="3-sheet.html">Open option 3</a>
+      </div>
+    </li>
+  </ol>
+
+  <div class="notes">
+    <p>Every option keeps the live page's copy, contact form, Turnstile and Worker endpoint, so any of them can replace public/index.html as is. On this preview server the form posts to nothing and Turnstile logs a hostname error; both work on tightstack.ca.</p>
+    <p>Reduced-motion visitors and visitors without JavaScript get the finished page with no entry sequence.</p>
+  </div>
+</div>
+</body>
+</html>

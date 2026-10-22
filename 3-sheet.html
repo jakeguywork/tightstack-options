@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>TightStack: software consulting in British Columbia</title>
+<meta name="description" content="TightStack is a small consulting studio in British Columbia. Websites, conference and event registration, and internal tools, built to fit the job and the budget.">
+<meta name="theme-color" content="#F6F8FB">
+<script>document.documentElement.className += ' js'; if ('scrollRestoration' in history) history.scrollRestoration = 'manual';</script>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23123156'/%3E%3Cg fill='none' stroke='%23EAF1F8' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M4 24 16 18 28 24 16 30Z'/%3E%3Cpath d='M4 16 16 10 28 16 16 22Z'/%3E%3Cpath d='M4 8 16 2 28 8 16 14Z'/%3E%3C/g%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..700,0..100,0..1&family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ═════════════════════════════════════════════════════════
+   TIGHTSTACK — OPTION 3 · SHEET
+   Nothing plays by itself. The first screen is a white sheet
+   with the exploded stack on it, and the visitor's scroll is
+   what closes it, carries it to the i, prints the name, and
+   then tucks the name into the corner as the sheet turns navy
+   and the site proper begins. Scroll back up and it all
+   reverses. The way steven.com hands its logo over to the
+   scroll, done with our own mark.
+   ═════════════════════════════════════════════════════════ */
+
+:root{
+  --paper: #F6F8FB;
+  --ink:   #123156;
+  --field: #123156;
+  --chalk: #EAF1F8;
+  --line:  #7FA6CC;
+  --muted: #A8C2DA;
+  --rule:  #2B4E77;
+  --p-line:#9FB8D0;      /* hairlines on paper */
+  --p-muted:#4E6A88;
+  --pale:  #D5DEE8; --light:#8FA3B8; --mid:#3B5878;   /* the print trail on paper */
+
+  --display: "Fraunces", Georgia, serif;
+  --body:    "IBM Plex Sans", system-ui, sans-serif;
+  --mono:    "IBM Plex Mono", ui-monospace, monospace;
+
+  --gutter: clamp(1.25rem, 6vw, 5rem);
+  --ease-out: cubic-bezier(.19,1,.22,1);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; }
+
+body{
+  margin:0; background:var(--field); color:var(--chalk);
+  font-family:var(--body); font-size:17px; line-height:1.6;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+::selection{ background:var(--chalk); color:var(--field); }
+a{ color:inherit; }
+:focus-visible{ outline:2px solid currentColor; outline-offset:3px; }
+[hidden]{ display:none !important; }
+
+.label{ font-family:var(--mono); font-size:.75rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0; }
+.link{ text-decoration:none; border-bottom:1px solid var(--line); padding-bottom:.08em; transition:border-color .3s; }
+.link:hover{ border-bottom-color:currentColor; }
+.pill{
+  display:inline-flex; align-items:center; gap:.6em;
+  font-family:var(--mono); font-size:.75rem; letter-spacing:.14em; text-transform:uppercase;
+  text-decoration:none; border:1px solid currentColor; border-radius:999px;
+  padding:.85em 1.4em; color:inherit; background:transparent; transition:background .25s, color .25s, border-color .25s;
+}
+.pill svg{ width:.9em; height:.9em; }
+.pill.solid{ background:var(--chalk); color:var(--field); border-color:var(--chalk); }
+.pill.solid:hover{ background:var(--muted); border-color:var(--muted); }
+.pill:not(.solid):hover{ background:color-mix(in srgb, currentColor 10%, transparent); }
+
+/* ═══ THE LOGOTYPE ═══════════════════════════════════════ */
+.logotype{
+  position:relative; display:inline-block; margin:0;
+  font-family:var(--display); font-weight:600;
+  font-variation-settings:"opsz" 144, "SOFT" 30, "WONK" 1;
+  letter-spacing:-.045em; line-height:1; white-space:nowrap; font-kerning:normal; color:inherit;
+}
+.logotype .l{ display:inline-block; position:relative; line-height:1; transition:color .18s linear; }
+.logotype .i .tittle{ position:absolute; left:50%; top:.155em; width:.19em; height:.19em; margin-left:-.065em; transform-origin:50% 50%; }
+.logotype .tittle svg{ display:block; width:100%; height:100%; overflow:visible; }
+.stack .plate path{ fill:none; stroke:currentColor; stroke-width:var(--sw, 10); stroke-linejoin:miter; stroke-linecap:butt; opacity:var(--o); }
+.stack .lead,.stack .tick{ fill:none; stroke:currentColor; stroke-width:var(--sw, 10); opacity:0; }
+.stack .lead{ stroke-dasharray:2 5; }
+
+/* ═══ THE ENTRY: a tall section with a pinned stage ═══════ */
+.entry{ position:relative; background:var(--paper); color:var(--ink); transition:background .9s ease, color .9s ease; }
+.js .entry{ height:340svh; }
+.night .entry{ background:var(--field); color:var(--chalk); }
+/* the stack has its own colour: the letters around it are transparent until they print */
+.stage .stack{ color:var(--ink); transition:color .9s ease; }
+.night .stage .stack{ color:var(--chalk); }
+.stage{
+  position:sticky; top:0; height:100svh; overflow:hidden;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:0 var(--gutter);
+}
+.js .stage .l{ color:transparent; }
+.stage .l[data-s="1"]{ color:var(--pale); }
+.stage .l[data-s="2"]{ color:var(--light); }
+.stage .l[data-s="3"]{ color:var(--mid); }
+.stage .l[data-s="4"]{ color:currentColor; }
+.night .stage .l[data-s="1"]{ color:#35598A; }
+.night .stage .l[data-s="2"]{ color:#7FA6CC; }
+.night .stage .l[data-s="3"]{ color:#BFD3E6; }
+.stage .logotype{ font-size:clamp(2.75rem, 13vw, 13.5rem); transform-origin:0 0; will-change:transform; }
+.js .stage .stack .plate path{ --o:1; stroke-dasharray:1; stroke-dashoffset:1; }
+.inked .stage .stack .plate path{ animation:ink .6s cubic-bezier(.4,0,.2,1) forwards; animation-delay:calc(var(--i) * 110ms); }
+@keyframes ink{ to{ stroke-dashoffset:0; } }
+
+/* the copy that takes the stage once the name has gone to the corner */
+.hero-copy{ position:absolute; left:var(--gutter); right:var(--gutter); top:50%; transform:translateY(-40%); text-align:center; opacity:0; pointer-events:none; }
+.hero-copy.on{ pointer-events:auto; }
+.tagline{
+  font-family:var(--display); font-weight:400; font-variation-settings:"opsz" 144, "SOFT" 30, "WONK" 1;
+  font-size:clamp(2rem, 5.2vw, 4.6rem); line-height:1.05; letter-spacing:-.025em; margin:0 auto 1.25rem; max-width:16ch; text-wrap:balance;
+}
+.tagline em{ font-style:italic; }
+.lede{ margin:0 auto 2rem; max-width:36rem; color:var(--muted); text-wrap:pretty; }
+.cta{ display:flex; flex-wrap:wrap; gap:.75rem; justify-content:center; }
+
+.cue{
+  position:absolute; left:var(--gutter); bottom:1.4rem; display:flex; align-items:center; gap:.6rem;
+  font-family:var(--mono); font-size:.7rem; letter-spacing:.14em; text-transform:uppercase; color:var(--p-muted);
+  transition:opacity .4s ease;
+}
+.cue .bar{ display:block; width:1px; height:1.4rem; background:var(--p-line); overflow:hidden; position:relative; }
+.cue .bar::after{ content:""; position:absolute; left:0; right:0; top:-100%; height:100%; background:var(--ink); animation:drip 1.8s ease-in-out infinite; }
+@keyframes drip{ 0%{ top:-100%; } 100%{ top:100%; } }
+.corner{ position:absolute; right:var(--gutter); bottom:1.4rem; font-family:var(--mono); font-size:.7rem; letter-spacing:.14em; text-transform:uppercase; color:var(--p-muted); transition:opacity .4s ease; }
+.night .cue,.night .corner{ color:var(--muted); }
+.night .cue .bar{ background:var(--rule); }
+.night .cue .bar::after{ background:var(--chalk); }
+
+/* the sheet's rules: cap line and baseline, drawn under the name */
+.guides{ position:absolute; left:0; right:0; height:1px; background:var(--p-line); opacity:.5; transform:scaleX(var(--g,0)); transform-origin:left; }
+.night .guides{ background:var(--rule); }
+
+/* ═══ MASTHEAD ═══════════════════════════════════════════ */
+.masthead{
+  position:fixed; top:0; left:0; right:0; z-index:20;
+  display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  padding:1.1rem var(--gutter); color:var(--ink);
+  transition:color .9s ease, background .4s ease, box-shadow .4s ease;
+}
+.night .masthead{ color:var(--chalk); }
+.masthead.scrolled{ background:color-mix(in srgb, var(--field) 86%, transparent); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); box-shadow:0 1px 0 var(--rule); }
+.masthead .logotype{ font-size:1.6rem; visibility:hidden; }
+.masthead .logotype.on{ visibility:visible; }
+.masthead .logotype a{ text-decoration:none; }
+.masthead .stack{ --sw:28; }
+
+.nav{ display:flex; align-items:center; gap:clamp(1rem,3vw,2.25rem); opacity:0; transition:opacity .5s ease; }
+.nav.on{ opacity:1; }
+.nav a:not(.pill){ font-family:var(--mono); font-size:.75rem; letter-spacing:.14em; text-transform:uppercase; text-decoration:none; opacity:.75; }
+.nav a:not(.pill):hover{ opacity:1; }
+
+/* ═══ THE SITE PROPER ════════════════════════════════════ */
+.page{ max-width:84rem; margin:0 auto; padding:0 var(--gutter); }
+.section{ position:relative; padding:clamp(3rem,10vh,7rem) 0; }
+.section::before{ content:""; position:absolute; top:0; left:0; right:0; height:1px; background:var(--rule); }
+.js .section::before{ transform:scaleX(0); transform-origin:left; transition:transform 1.1s cubic-bezier(.32,.9,.28,1); }
+.js .section.in::before{ transform:scaleX(1); }
+.js .rise{ opacity:0; transform:translateY(14px); transition:opacity .7s ease, transform .9s var(--ease-out); transition-delay:calc(.2s + var(--i,0) * 90ms); }
+.js .section.in .rise{ opacity:1; transform:none; }
+
+.split{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.6fr); gap:clamp(1.5rem,5vw,5rem); align-items:start; }
+.split > .side{ position:sticky; top:5.5rem; }
+.statement{
+  font-family:var(--display); font-weight:400; font-variation-settings:"opsz" 144, "SOFT" 30, "WONK" 1;
+  font-size:clamp(1.9rem, 4.6vw, 4rem); line-height:1.08; letter-spacing:-.025em; margin:0; max-width:24ch; text-wrap:balance;
+}
+.statement .w{ display:inline-block; }
+.js .statement .w{ opacity:0; transform:translateY(.35em); }
+.js .statement.in .w{ opacity:1; transform:none; transition:opacity .5s ease, transform .7s var(--ease-out); transition-delay:calc(var(--n) * 35ms); }
+.statement .q{ color:var(--line); }
+.aside{ font-family:var(--mono); font-size:.8rem; line-height:1.75; color:var(--muted); max-width:28ch; margin:0; }
+.heading{
+  font-family:var(--display); font-weight:400; font-variation-settings:"opsz" 72, "SOFT" 40, "WONK" 1;
+  font-size:clamp(1.5rem,3vw,2.2rem); line-height:1.15; letter-spacing:-.02em; margin:.75rem 0 1rem; max-width:20ch; text-wrap:balance;
+}
+.copy{ margin:0 0 1rem; max-width:34rem; text-wrap:pretty; }
+.copy:last-child{ margin-bottom:0; }
+
+/* what we build: one ruled table, number · title · what it is */
+.services{ list-style:none; margin:1.5rem 0 0; padding:0; }
+.services li{
+  display:grid; grid-template-columns:4rem minmax(0,1fr) minmax(0,1.4fr); gap:.5rem 2rem; align-items:baseline;
+  padding:1.6rem 0; border-top:1px solid var(--rule); position:relative;
+}
+.services li:last-child{ border-bottom:1px solid var(--rule); }
+.services li::after{ content:""; position:absolute; left:0; top:-1px; height:1px; width:0; background:var(--chalk); transition:width .6s var(--ease-out); }
+.services li:hover::after{ width:100%; }
+.services .num{ font-family:var(--mono); font-size:.75rem; letter-spacing:.14em; color:var(--line); }
+.services h3{ font-family:var(--display); font-weight:400; font-variation-settings:"opsz" 72, "SOFT" 40, "WONK" 1; font-size:clamp(1.35rem,2.4vw,1.9rem); line-height:1.15; letter-spacing:-.02em; margin:0; }
+.services p{ margin:0; color:var(--muted); text-wrap:pretty; }
+
+.work{ list-style:none; margin:0; padding:0; }
+.work li{ border-top:1px solid var(--rule); padding:1.4rem 0; }
+.work li:last-child{ border-bottom:1px solid var(--rule); }
+.work .url{ font-family:var(--mono); font-size:1rem; display:inline-flex; align-items:center; gap:.6em; margin-bottom:.4rem; }
+.work .url svg{ width:.85em; height:.85em; transition:transform .3s var(--ease-out); }
+.work .url:hover svg{ transform:translate(3px,-3px); }
+.work p{ margin:0; color:var(--muted); max-width:36rem; }
+
+.form{ display:flex; flex-wrap:wrap; gap:.75rem; max-width:32rem; }
+.field{ flex:1 1 14rem; position:relative; }
+.field input{ width:100%; font-family:var(--body); font-size:1.0625rem; color:var(--chalk); background:transparent; border:0; border-bottom:1px solid var(--line); border-radius:0; padding:.75rem .1rem; }
+.field input:focus{ outline:none; }
+.field input::placeholder{ color:color-mix(in srgb, var(--muted) 70%, transparent); }
+.field::after{ content:""; position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--chalk); transform:scaleX(0); transform-origin:left; transition:transform .45s var(--ease-out); }
+.field:focus-within::after{ transform:scaleX(1); }
+.submit{ cursor:pointer; }
+.submit[disabled]{ opacity:.5; cursor:default; }
+.note{ font-family:var(--mono); font-size:.8rem; line-height:1.7; color:var(--muted); margin:1.1rem 0 0; max-width:32rem; }
+.note[data-state="error"]{ color:var(--chalk); }
+.sent{ font-size:1.125rem; margin:0; max-width:32rem; }
+.sent span{ font-style:italic; }
+.hp{ position:absolute; left:-10000px; width:1px; height:1px; overflow:hidden; }
+#botcheck:not(.on){ display:none; }
+#botcheck.on{ flex:0 0 0; height:0; overflow:hidden; }
+#botcheck.on.showing{ flex:1 1 100%; height:auto; overflow:visible; margin:.35rem 0 .1rem; }
+.sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+
+.colophon{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:.5rem 1.5rem; padding:1.25rem 0 2rem; border-top:1px solid var(--rule); margin-top:clamp(2rem,6vh,4rem); }
+
+@media (max-width:56rem){
+  .split{ grid-template-columns:1fr; }
+  .split > .side{ position:static; }
+  .services li{ grid-template-columns:3rem minmax(0,1fr); }
+  .services p{ grid-column:2; }
+  .nav a:not(.pill){ display:none; }
+  .corner{ display:none; }
+}
+@media (prefers-reduced-motion: reduce){
+  *{ animation:none !important; transition:none !important; }
+  .js .entry{ height:auto; }
+  .stage{ position:static; height:auto; min-height:100svh; }
+  .js .stage .l{ color:currentColor; }
+  .js .stage .stack .plate path{ stroke-dashoffset:0; }
+  .hero-copy{ position:static; transform:none; opacity:1; pointer-events:auto; margin-top:3rem; }
+  .cue,.corner{ display:none; }
+  .nav{ opacity:1; }
+  .js .rise,.js .statement .w{ opacity:1; transform:none; }
+  .js .section::before{ transform:none; }
+}
+</style>
+</head>
+
+<body>
+
+<header class="masthead" id="masthead">
+  <div class="logotype" id="mast-logo" aria-label="TightStack"><a href="#top" aria-label="TightStack, back to top"><span class="l" data-s="4">T</span><span class="l i" data-s="4">ı<span class="tittle" aria-hidden="true"><svg class="stack" viewBox="0 0 200 200"><g class="plate"><path style="--o:.35" d="M20 110 L100 70 L180 110 L100 150Z"/></g><g class="plate"><path style="--o:.62" d="M20 80 L100 40 L180 80 L100 120Z"/></g><g class="plate"><path style="--o:1" d="M20 50 L100 10 L180 50 L100 90Z"/></g></svg></span></span><span class="l" data-s="4">g</span><span class="l" data-s="4">h</span><span class="l" data-s="4">t</span><span class="l" data-s="4">S</span><span class="l" data-s="4">t</span><span class="l" data-s="4">a</span><span class="l" data-s="4">c</span><span class="l" data-s="4">k</span></a></div>
+  <nav class="nav" id="nav">
+    <a href="#build">What we build</a>
+    <a href="#events">Events</a>
+    <a href="#work">Work</a>
+    <a class="pill" href="#touch">Get in touch <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+  </nav>
+</header>
+
+<section class="entry" id="entry" aria-label="TightStack">
+  <div class="stage" id="stage">
+    <span class="guides" id="guide-cap" aria-hidden="true"></span>
+    <span class="guides" id="guide-base" aria-hidden="true"></span>
+
+    <h1 class="logotype" id="logotype" aria-label="TightStack"><span class="l" data-n="1">T</span><span class="l i" data-n="0">ı<span class="tittle" id="tittle" aria-hidden="true"><svg class="stack" id="stack" viewBox="0 0 200 200">
+      <line class="lead" id="lead" x1="100" y1="-80" x2="100" y2="190"/>
+      <g class="plate base" style="--i:0"><path style="--oc:.3" pathLength="1" d="M20 140 L100 100 L180 140 L100 180Z"/><line class="tick" x1="190" y1="140" x2="206" y2="140"/></g>
+      <g class="plate" style="--i:1"><path style="--oc:.35"  pathLength="1" d="M20 110 L100 70 L180 110 L100 150Z"/><line class="tick" x1="190" y1="110" x2="206" y2="110"/></g>
+      <g class="plate" style="--i:2"><path style="--oc:.62" pathLength="1" d="M20 80 L100 40 L180 80 L100 120Z"/><line class="tick" x1="190" y1="80" x2="206" y2="80"/></g>
+      <g class="plate" style="--i:3"><path style="--oc:1"   pathLength="1" d="M20 50 L100 10 L180 50 L100 90Z"/><line class="tick" x1="190" y1="50" x2="206" y2="50"/></g>
+    </svg></span></span><span class="l" data-n="2">g</span><span class="l" data-n="3">h</span><span class="l" data-n="4">t</span><span class="l" data-n="5">S</span><span class="l" data-n="6">t</span><span class="l" data-n="7">a</span><span class="l" data-n="8">c</span><span class="l" data-n="9">k</span></h1>
+
+    <div class="hero-copy" id="hero-copy">
+      <h2 class="tagline">Software that fits the job <em>and the budget</em>.</h2>
+      <p class="lede">TightStack is a small consulting studio in British Columbia. We design and build websites, registration systems and internal tools.</p>
+      <div class="cta">
+        <a class="pill solid" href="#touch">Tell us what you need <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+        <a class="pill" href="#work">Recent work</a>
+      </div>
+    </div>
+
+    <p class="cue" id="cue"><span class="bar" aria-hidden="true"></span> Scroll to begin</p>
+    <p class="corner" id="corner">Software consulting · British Columbia</p>
+  </div>
+</section>
+
+<main id="top">
+  <div class="page">
+
+    <section class="section" aria-label="About TightStack" style="padding-top:clamp(4rem,12vh,8rem)">
+      <div class="split">
+        <p class="aside rise" style="--i:0">A small studio. One person you can reach, who stays on the job from the first call to the last fix.</p>
+        <p class="statement" id="statement">Tell us what you need and what you can spend, <span class="q">and we will work out what fits.</span></p>
+      </div>
+    </section>
+
+    <section class="section" id="build" aria-labelledby="build-h">
+      <p class="label rise" style="--i:0" id="build-h">What we build</p>
+      <ol class="services">
+        <li class="rise" style="--i:1"><span class="num" aria-hidden="true">01</span><h3>Websites and web apps</h3><p>From a single page to a full site, built so you can update it yourself.</p></li>
+        <li class="rise" style="--i:2"><span class="num" aria-hidden="true">02</span><h3>Conference and event registration</h3><p>Sign-up, payment and attendee lists, all in one place.</p></li>
+        <li class="rise" style="--i:3"><span class="num" aria-hidden="true">03</span><h3>Internal tools and integrations</h3><p>Dashboards, databases and the connections between the systems you already use.</p></li>
+        <li class="rise" style="--i:4"><span class="num" aria-hidden="true">04</span><h3>Advice</h3><p>A second opinion on a plan, a quote or an existing system, when that is all you need.</p></li>
+      </ol>
+    </section>
+
+    <section class="section" id="events" aria-labelledby="events-h">
+      <div class="split">
+        <div class="side rise" style="--i:0">
+          <p class="label">Conferences and events</p>
+          <h2 class="heading" id="events-h">Registration and ticketing, built for your event.</h2>
+        </div>
+        <div>
+          <p class="copy rise" style="--i:1">Attendees sign up and pay in one place. You get one live list of who is coming and what they paid, with nothing to reconcile by hand.</p>
+          <p class="copy rise" style="--i:2">We build it to fit your event and your budget, and we stay on to support it for as long as you need us.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="work" aria-labelledby="work-h">
+      <div class="split">
+        <div class="side rise" style="--i:0">
+          <p class="label">Recent work</p>
+          <h2 class="heading" id="work-h">Two sites you can visit today.</h2>
+        </div>
+        <ul class="work">
+          <li class="rise" style="--i:1">
+            <a class="link url" href="https://conference.bcdramateachers.com">conference.bcdramateachers.com <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
+            <p>Registration and payment for the Association of BC Drama Educators&rsquo; annual conference.</p>
+          </li>
+          <li class="rise" style="--i:2">
+            <a class="link url" href="https://bcdramafestival.com">bcdramafestival.com <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
+            <p>The BC Drama Festival website: festival information, workshops, awards and sponsors.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="touch" aria-labelledby="touch-h">
+      <div class="split">
+        <div class="side rise" style="--i:0">
+          <p class="label">Get in touch</p>
+          <h2 class="heading" id="touch-h">Leave an email address and we will write to you.</h2>
+        </div>
+        <div class="rise" style="--i:1">
+          <form class="form" id="contact-form" novalidate>
+            <div class="field">
+              <label class="sr-only" for="email">Your email address</label>
+              <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@company.com" required>
+            </div>
+            <div class="hp" aria-hidden="true">
+              <label for="website">Leave this empty</label>
+              <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+            </div>
+            <div id="botcheck"></div>
+            <button class="pill solid submit" type="submit" id="submit">Email me</button>
+          </form>
+          <p class="note" id="note">It goes to a person, not a list. You will hear back in a day or two.</p>
+          <p class="sent" id="sent" hidden></p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="colophon">
+      <p class="label">TightStack.ca</p>
+      <p class="label">British Columbia, Canada</p>
+      <p class="label">&copy; <span id="year">2026</span></p>
+    </footer>
+
+  </div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  var ENDPOINT = '';            /* review copy: no Worker behind it */
+  var INBOX    = 'hello@tightstack.ca';
+  var TURNSTILE_SITEKEY = '';   /* review copy */
+
+  var html = document.documentElement, body = document.body;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  var entry = document.getElementById('entry'), stage = document.getElementById('stage');
+  var logotype = document.getElementById('logotype'), tittle = document.getElementById('tittle');
+  var stack = document.getElementById('stack'), lead = document.getElementById('lead');
+  var plates = [].slice.call(stack.querySelectorAll('.plate'));
+  var letters = [].slice.call(logotype.querySelectorAll('.l'));
+  var heroCopy = document.getElementById('hero-copy'), cue = document.getElementById('cue'), corner = document.getElementById('corner');
+  var mastLogo = document.getElementById('mast-logo'), nav = document.getElementById('nav'), masthead = document.getElementById('masthead');
+  var guideCap = document.getElementById('guide-cap'), guideBase = document.getElementById('guide-base');
+
+  var clamp = function (v) { return v < 0 ? 0 : v > 1 ? 1 : v; };
+  var smooth = function (t) { t = clamp(t); return t * t * (3 - 2 * t); };
+  var lerp = function (a, b, t) { return a + (b - a) * t; };
+  var seg = function (p, a, b) { return smooth((p - a) / (b - a)); };
+
+  /* ── measure ──────────────────────────────────────────────
+     Everything is measured at scroll 0 with no transforms on,
+     so the opening state is a transform away from the resting
+     one, and the corner is a transform away from the stage. */
+  var M = null;
+  function measure(){
+    logotype.style.transform = 'none'; tittle.style.transform = 'none';
+    var y = window.pageYOffset; if (y) window.scrollTo({ top:0, behavior:'instant' });
+    var r = tittle.getBoundingClientRect(), W = r.width, unit = W / 200;
+    var big = Math.min(window.innerWidth * .46, window.innerHeight * .34, 300);
+    var S = big / (236 * unit);
+    var cx = window.innerWidth / 2, cy = window.innerHeight / 2 + (100 - 62) * unit * S;
+    var lr = logotype.getBoundingClientRect(), mr = mastLogo.getBoundingClientRect();
+    var ratio = mr.width / lr.width;
+    var cap = lr.top + lr.height * .17, base = lr.top + lr.height * .855;   /* cap line and baseline of the name */
+    M = {
+      vh:window.innerHeight,
+      dx:cx - (r.left + W / 2), dy:cy - (r.top + W / 2), S:S,
+      sw0:1.25 / (unit * S), sw1:1.25 / unit,
+      fx:mr.left - lr.left, fy:mr.top - lr.top, fs:ratio,
+      cap:cap - stage.getBoundingClientRect().top, base:base - stage.getBoundingClientRect().top,
+      range:entry.offsetHeight - window.innerHeight
+    };
+    guideCap.style.top = M.cap.toFixed(1) + 'px';
+    guideBase.style.top = M.base.toFixed(1) + 'px';
+    if (y) window.scrollTo({ top:y, behavior:'instant' });
+  }
+
+  /* ── scrub ─────────────────────────────────────────────── */
+  var queued = false, lastP = -1;
+  function frame(){
+    queued = false;
+    if (!M) return;
+    var p = clamp(window.pageYOffset / M.range);
+    if (p === lastP) return; lastP = p;
+
+    /* 1. the plates close                                    */
+    var open = 1 - seg(p, .05, .30);
+    plates.forEach(function (g, i) {
+      g.style.transform = 'translateY(' + (-22 * i * open).toFixed(2) + 'px)';
+      var path = g.firstElementChild, oc = parseFloat(path.style.getPropertyValue('--oc'));
+      var o = lerp(oc, 1, open);
+      if (i === 0) o *= 1 - seg(p, .30, .52);          /* the bottom plate goes as the stack becomes the dot */
+      path.style.setProperty('--o', o.toFixed(3));
+      g.children[1].style.opacity = (open * .7).toFixed(3);
+    });
+    lead.style.opacity = (open * .55).toFixed(3);
+
+    /* 2. the stack travels to the i and thickens into a dot  */
+    var t = seg(p, .30, .52);
+    tittle.style.transform = 'translate(' + (M.dx * (1 - t)).toFixed(1) + 'px,' + (M.dy * (1 - t)).toFixed(1) + 'px) scale(' + lerp(M.S, 1, t).toFixed(3) + ')';
+    stack.style.setProperty('--sw', lerp(M.sw0, M.sw1, t).toFixed(3));
+    guideCap.style.setProperty('--g', seg(p, .34, .50).toFixed(3));
+    guideBase.style.setProperty('--g', seg(p, .38, .54).toFixed(3));
+
+    /* 3. the name prints out from the i                      */
+    letters.forEach(function (l) {
+      var n = +l.getAttribute('data-n');
+      var u = (p - (.52 + n * .024)) / .05;
+      l.setAttribute('data-s', u <= 0 ? 0 : u < .33 ? 1 : u < .66 ? 2 : u < 1 ? 3 : 4);
+    });
+
+    /* 4. the name goes to the corner, the copy takes the stage,
+          and the sheet turns                                  */
+    var k = seg(p, .78, 1);
+    if (k > 0) {
+      logotype.style.transform = 'translate(' + (M.fx * k).toFixed(1) + 'px,' + (M.fy * k).toFixed(1) + 'px) scale(' + lerp(1, M.fs, k).toFixed(4) + ')';
+      logotype.style.opacity = k >= 1 ? '0' : '1';
+    } else { logotype.style.transform = 'none'; logotype.style.opacity = '1'; }
+    mastLogo.classList.toggle('on', k >= 1);
+    heroCopy.style.opacity = seg(p, .86, 1).toFixed(3);
+    heroCopy.style.transform = 'translateY(' + (-40 - 10 * (1 - seg(p, .86, 1))).toFixed(1) + '%)';
+    heroCopy.classList.toggle('on', k >= 1);
+    nav.classList.toggle('on', k > .5);
+    html.classList.toggle('night', p > .84);
+    cue.style.opacity = p < .04 ? '1' : '0';
+    corner.style.opacity = p < .76 ? '1' : '0';
+    guideCap.style.opacity = guideBase.style.opacity = (1 - k).toFixed(2);
+  }
+  function onScroll(){ if (queued) return; queued = true; requestAnimationFrame(frame); }
+
+  var begun = false;
+  function begin(){
+    if (begun) return;
+    begun = true;
+    if (reduced) {
+      letters.forEach(function (l) { l.setAttribute('data-s', 4); });
+      plates.forEach(function (g) { var path = g.firstElementChild; path.style.setProperty('--o', path.style.getPropertyValue('--oc')); });
+      stack.style.setProperty('--sw', 16);
+      mastLogo.classList.add('on'); nav.classList.add('on'); heroCopy.classList.add('on');
+      watch(); return;
+    }
+    measure();
+    lastP = -1; frame();
+    body.classList.add('inked');                 /* the one thing that plays on its own: the plates ink in */
+    window.addEventListener('scroll', onScroll, { passive:true });
+    window.addEventListener('resize', function () { measure(); lastP = -1; frame(); });
+    watch();
+  }
+  window.scrollTo({ top:0, left:0, behavior:'instant' });
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(begin); setTimeout(begin, 1600); } else { begin(); }
+
+  /* ── the rest of the page ────────────────────────────────── */
+  var statement = document.getElementById('statement');
+  (function split(){
+    var n = 0;
+    function walk(node){
+      if (node.nodeType === 3) {
+        var frag = document.createDocumentFragment();
+        node.textContent.split(/(\s+)/).forEach(function (part) {
+          if (!part) return;
+          if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+          var s = document.createElement('span');
+          s.className = 'w'; s.style.setProperty('--n', n++); s.textContent = part;
+          frag.appendChild(s);
+        });
+        node.parentNode.replaceChild(frag, node);
+      } else if (node.nodeType === 1) { [].slice.call(node.childNodes).forEach(walk); }
+    }
+    walk(statement);
+  })();
+  function watch(){
+    if (!('IntersectionObserver' in window)) {
+      masthead.classList.add('scrolled');
+      document.querySelectorAll('.section').forEach(function (s) { s.classList.add('in'); });
+      statement.classList.add('in'); return;
+    }
+    new IntersectionObserver(function (es) {
+      es.forEach(function (e) { masthead.classList.toggle('scrolled', !e.isIntersecting); });
+    }, { threshold:0 }).observe(entry);
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (!e.isIntersecting) return; e.target.classList.add('in'); io.unobserve(e.target); });
+    }, { rootMargin:'0px 0px -12% 0px', threshold:0.1 });
+    document.querySelectorAll('.section').forEach(function (s) { io.observe(s); });
+    io.observe(statement);
+  }
+
+  /* ── bot check (unchanged from the live page) ─────────── */
+  var tsWidget = null;
+  if (TURNSTILE_SITEKEY && ENDPOINT && !window.__tsLoaded) {
+    window.__tsLoaded = true;
+    var holder = document.getElementById('botcheck');
+    holder.classList.add('on');
+    window.onTurnstileReady = function () {
+      try {
+        tsWidget = window.turnstile.render(holder, {
+          sitekey: TURNSTILE_SITEKEY, theme: 'dark', appearance: 'interaction-only', 'refresh-expired': 'auto',
+          'before-interactive-callback': function () { holder.classList.add('showing'); },
+          'after-interactive-callback':  function () { holder.classList.remove('showing'); }
+        });
+      } catch (e) { holder.classList.remove('on'); }
+    };
+    var ts = document.createElement('script');
+    ts.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileReady';
+    ts.async = true; ts.defer = true;
+    document.head.appendChild(ts);
+  }
+
+  /* ── form (unchanged from the live page) ──────────────── */
+  var form = document.getElementById('contact-form'), input = document.getElementById('email');
+  var button = document.getElementById('submit'), note = document.getElementById('note'), sent = document.getElementById('sent');
+  var DEFAULT_NOTE = note.textContent, valid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  input.addEventListener('input', function () {
+    if (note.getAttribute('data-state') === 'error') { note.removeAttribute('data-state'); note.textContent = DEFAULT_NOTE; }
+  });
+  function fail(m){ note.setAttribute('data-state','error'); note.textContent = m; }
+  function done(address){
+    form.hidden = true; note.hidden = true; sent.hidden = false;
+    sent.innerHTML = 'Thank you. We will write to <span></span> shortly.';
+    sent.querySelector('span').textContent = address;
+  }
+  function undo(){ form.hidden = false; note.hidden = false; sent.hidden = true; button.disabled = false; button.textContent = 'Email me'; }
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var address = input.value.trim();
+    if (!valid.test(address)) { fail('That address is missing something. Check it and try again.'); input.focus(); return; }
+    if (TURNSTILE_SITEKEY && ENDPOINT) {
+      var tok = form.querySelector('[name="cf-turnstile-response"]');
+      if (!tok || !tok.value) { fail('The bot check is still loading. Give it a second and try again.'); return; }
+    }
+    if (!ENDPOINT) {
+      window.location.href = 'mailto:' + INBOX + '?subject=' + encodeURIComponent('Hello from TightStack.ca') +
+        '&body=' + encodeURIComponent('Please write to me at ' + address + '.\n\n');
+      done(address); return;
+    }
+    var payload = new FormData(form);
+    done(address);
+    fetch(ENDPOINT, { method:'POST', headers:{ 'Accept':'application/json' }, body:payload })
+      .then(function (res){ if (!res.ok) throw new Error(res.status); })
+      .catch(function (err){
+        undo();
+        fail(err.message === '429' ? 'Give it a minute and try again.'
+           : err.message === '403' ? 'That did not pass the bot check. Reload and try again.'
+           : 'That did not send. Write to ' + INBOX + ' and we will pick it up there.');
+        if (tsWidget !== null && window.turnstile && window.turnstile.reset) { try { window.turnstile.reset(tsWidget); } catch (e) {} }
+      });
+  });
+})();
+</script>
+</body>
+</html>

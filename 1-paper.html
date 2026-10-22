@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>TightStack: software consulting in British Columbia</title>
+<meta name="description" content="TightStack is a small consulting studio in British Columbia. Websites, conference and event registration, and internal tools, built to fit the job and the budget.">
+<meta name="theme-color" content="#F6F8FB">
+<script>document.documentElement.className += ' js entry'; if ('scrollRestoration' in history) history.scrollRestoration = 'manual';</script>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23123156'/%3E%3Cg fill='none' stroke='%23EAF1F8' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M4 24 16 18 28 24 16 30Z'/%3E%3Cpath d='M4 16 16 10 28 16 16 22Z'/%3E%3Cpath d='M4 8 16 2 28 8 16 14Z'/%3E%3C/g%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..700,0..100,0..1&family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ═════════════════════════════════════════════════════════
+   TIGHTSTACK — OPTION 1 · PAPER
+   The logo as it was drawn: navy on white. The site opens on
+   the stack alone, in the middle of a blank sheet. It closes,
+   shrinks to become the dot on the i, and the name prints
+   around it. Only then does the page arrive.
+
+   Entry (first visit in a tab, ~3.6 s):
+     ink the stack → close it → it travels to the i → the
+     name prints → the rest of the hero rises.
+   Repeat visits in the same tab get the short version.
+   ═════════════════════════════════════════════════════════ */
+
+:root{
+  --paper: #F6F8FB;
+  --ink:   #123156;
+  --mid:   #3B5878;      /* print trail, second step   */
+  --light: #8FA3B8;      /* print trail, first step    */
+  --pale:  #D5DEE8;      /* print trail, leading edge  */
+  --line:  #9FB8D0;      /* hairlines on paper         */
+  --rule:  #D3DEE9;
+  --muted: #4E6A88;
+
+  --display: "Fraunces", Georgia, serif;
+  --body:    "IBM Plex Sans", system-ui, sans-serif;
+  --mono:    "IBM Plex Mono", ui-monospace, monospace;
+
+  --gutter: clamp(1.25rem, 5vw, 4.5rem);
+  --ease-out: cubic-bezier(.19,1,.22,1);
+  --ease-io:  cubic-bezier(.7,0,.2,1);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
+html.entry{ overflow:hidden; }          /* no scrolling until the name has printed */
+
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:17px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{ background:var(--ink); color:var(--paper); }
+a{ color:inherit; }
+:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; }
+[hidden]{ display:none !important; }
+
+.label{
+  font-family:var(--mono); font-size:.75rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted); margin:0;
+}
+.link{ text-decoration:none; border-bottom:1px solid var(--line); padding-bottom:.08em; transition:border-color .3s; }
+.link:hover{ border-bottom-color:var(--ink); }
+
+/* pill buttons, the one borrowed shape */
+.pill{
+  display:inline-flex; align-items:center; gap:.6em;
+  font-family:var(--mono); font-size:.75rem; letter-spacing:.12em; text-transform:uppercase;
+  text-decoration:none; border:1px solid var(--ink); border-radius:999px;
+  padding:.85em 1.4em; color:var(--ink); background:transparent;
+  transition:background .25s, color .25s;
+}
+.pill svg{ width:.9em; height:.9em; }
+.pill:hover,.pill.solid{ background:var(--ink); color:var(--paper); }
+.pill.solid:hover{ background:var(--mid); border-color:var(--mid); }
+
+/* ═══ THE LOGOTYPE ═══════════════════════════════════════
+   Fraunces 600, opsz 144, SOFT 30, WONK 1, tracked -.045em.
+   A dotless i carries the stack where its dot would be.  */
+.logotype{
+  position:relative; display:inline-block; margin:0;
+  font-family:var(--display); font-weight:600;
+  font-variation-settings:"opsz" 144, "SOFT" 30, "WONK" 1;
+  letter-spacing:-.045em; line-height:1; white-space:nowrap;
+  font-kerning:normal; color:var(--ink);
+}
+.logotype .l{ display:inline-block; position:relative; line-height:1; }
+.logotype .i .tittle{
+  position:absolute; left:50%; top:.16em; width:.21em; height:.21em;
+  margin-left:-.105em; transform-origin:50% 50%;
+}
+.logotype .tittle svg{ display:block; width:100%; height:100%; overflow:visible; }
+
+/* the stack: four plates, closed. --open explodes them. */
+.stack .plate{
+  transform:translateY(calc(var(--open,0) * var(--i) * -22px));
+  transition:transform .65s var(--ease-io);
+  transition-delay:calc(var(--i) * 45ms);
+}
+.stack .plate path{
+  fill:none; stroke:var(--ink);
+  stroke-width:var(--sw, 10); stroke-linejoin:miter; stroke-linecap:butt;
+  opacity:var(--o);                       /* darkest plate on top */
+  transition:opacity .6s ease;
+}
+/* the stroke only thickens while the stack lands; before that it jumps */
+.land .hero .stack .plate path{ transition:stroke-width .85s var(--ease-io), opacity .6s ease; }
+.stack .lead,.stack .tick{ fill:none; stroke:var(--ink); stroke-width:var(--sw, 10); opacity:0; transition:opacity .35s ease; }
+.stack .lead{ stroke-dasharray:2 5; }
+
+.masthead .stack{ --sw:28; }
+.outro .stack{ --sw:10; }
+.land .hero .stack .base path{ --o:0; }
+
+/* ── entry sequence (gated on .js so the page is whole without it) */
+.js .hero .l{ color:transparent; }
+.js .hero .stack .plate{ --open:1; }
+.js .hero .stack .plate path{ --o:1; stroke-dasharray:1; stroke-dashoffset:1; }
+.js.quick .hero .stack .plate,
+.js.quick .hero .stack .plate path{ transition:none; }
+
+.ink .hero .stack .plate path{
+  animation:ink .6s cubic-bezier(.4,0,.2,1) forwards;
+  animation-delay:calc(var(--i) * 110ms);
+}
+@keyframes ink{ to{ stroke-dashoffset:0; } }
+.ink .hero .stack .lead{ opacity:.55; transition-delay:.1s; }
+.ink .hero .stack .tick{ opacity:.7; transition-delay:.8s; }
+
+.close .hero .stack .plate{ --open:0; }
+.close .hero .stack .lead,.close .hero .stack .tick{ opacity:0; transition-delay:0s; }
+.close .hero .stack .plate path{ --o:var(--oc); }   /* fade to the gradient as it closes */
+
+.hero .tittle{ transition:transform .85s var(--ease-io); }
+
+.print .hero .l{
+  animation:print .55s both;
+  animation-delay:calc(var(--n) * 85ms);
+}
+@keyframes print{
+  0%  { color:transparent; }
+  14% { color:var(--pale); }
+  50% { color:var(--light); }
+  78% { color:var(--mid); }
+  100%{ color:var(--ink); }
+}
+
+/* everything that is not the name waits */
+.js .later{ opacity:0; transform:translateY(14px); }
+.go .later{
+  opacity:1; transform:none;
+  transition:opacity .8s ease, transform 1s var(--ease-out);
+  transition-delay:calc(var(--d, 0) * 1ms);
+}
+
+/* ═══ MASTHEAD ═══════════════════════════════════════════ */
+.masthead{
+  position:fixed; top:0; left:0; right:0; z-index:20;
+  display:flex; align-items:center; justify-content:space-between; gap:1rem;
+  padding:1.1rem var(--gutter);
+  background:color-mix(in srgb, var(--paper) 0%, transparent);
+  transition:background .4s ease, box-shadow .4s ease;
+}
+.masthead.scrolled{
+  background:color-mix(in srgb, var(--paper) 88%, transparent);
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+  box-shadow:0 1px 0 var(--rule);
+}
+.masthead .logotype{ font-size:1.6rem; opacity:0; transform:translateY(6px); transition:opacity .4s, transform .5s var(--ease-out); pointer-events:none; }
+.masthead.scrolled .logotype{ opacity:1; transform:none; pointer-events:auto; }
+.masthead .logotype a{ text-decoration:none; }
+.nav{ display:flex; align-items:center; gap:clamp(1rem,3vw,2.25rem); }
+.nav a:not(.pill){ font-family:var(--mono); font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; text-decoration:none; color:var(--muted); }
+.nav a:not(.pill):hover{ color:var(--ink); }
+
+/* ═══ HERO ═══════════════════════════════════════════════ */
+.hero{
+  position:relative; min-height:100svh;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:6rem var(--gutter) 5rem;
+}
+.hero .logotype{ font-size:clamp(2.75rem, 13vw, 13.5rem); }
+
+/* concentric hairlines, centred where the stack is born */
+.arcs{ position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+.arcs svg{ position:absolute; left:50%; top:50%; width:160vmax; height:160vmax; transform:translate(-50%,-50%); }
+.arcs circle{ fill:none; stroke:var(--line); stroke-width:1; vector-effect:non-scaling-stroke; opacity:.45; }
+.js .arcs circle{ stroke-dasharray:1; stroke-dashoffset:1; }
+.ink .arcs circle{ animation:ink 1.6s cubic-bezier(.3,.8,.3,1) forwards; animation-delay:calc(var(--i) * 130ms + 100ms); }
+
+.tagline{
+  font-family:var(--display); font-weight:400;
+  font-variation-settings:"opsz" 96, "SOFT" 40, "WONK" 1;
+  font-size:clamp(1.5rem, 3.2vw, 2.4rem); line-height:1.15; letter-spacing:-.02em;
+  margin:clamp(2rem,5vh,3.25rem) 0 1rem; max-width:22ch; text-wrap:balance;
+}
+.tagline em{ font-style:italic; font-weight:400; }
+.lede{ font-size:1.0625rem; color:var(--muted); max-width:36rem; margin:0 0 2rem; text-wrap:pretty; }
+.cta{ display:flex; flex-wrap:wrap; gap:.75rem; justify-content:center; }
+
+.corner{
+  position:absolute; bottom:1.4rem; display:flex; align-items:center; gap:.6rem;
+  font-family:var(--mono); font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+}
+.corner.l{ left:var(--gutter); }
+.corner.r{ right:var(--gutter); }
+.corner .bar{ display:block; width:1px; height:1.4rem; background:var(--line); overflow:hidden; position:relative; }
+.corner .bar::after{ content:""; position:absolute; left:0; right:0; top:-100%; height:100%; background:var(--ink); animation:drip 1.8s ease-in-out infinite; }
+@keyframes drip{ 0%{ top:-100%; } 100%{ top:100%; } }
+
+/* ═══ SECTIONS ═══════════════════════════════════════════ */
+.wrap{ max-width:80rem; margin:0 auto; padding:0 var(--gutter); }
+.section{ position:relative; padding:clamp(3rem,9vh,6rem) 0; }
+.section::before{ content:""; position:absolute; top:0; left:0; right:0; height:1px; background:var(--rule); }
+.section.flush::before{ display:none; }
+
+/* the big statement, one word at a time as it enters */
+.statement{
+  font-family:var(--display); font-weight:400;
+  font-variation-settings:"opsz" 144, "SOFT" 30, "WONK" 1;
+  font-size:clamp(1.9rem, 4.6vw, 4rem); line-height:1.08; letter-spacing:-.025em;
+  max-width:24ch; margin:0; text-wrap:balance;
+}
+.statement .w{ display:inline-block; }
+.js .statement .w{ opacity:0; transform:translateY(.35em); }
+.js .statement.in .w{ opacity:1; transform:none; transition:opacity .5s ease, transform .7s var(--ease-out); transition-delay:calc(var(--n) * 35ms); }
+.statement .q{ color:var(--muted); }
+.aside{ font-family:var(--mono); font-size:.8rem; line-height:1.7; color:var(--muted); max-width:30ch; margin:0; }
+
+.split{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.6fr); gap:clamp(1.5rem,5vw,5rem); align-items:start; }
+.split > .side{ position:sticky; top:5.5rem; }
+.heading{
+  font-family:var(--display); font-weight:400;
+  font-variation-settings:"opsz" 72, "SOFT" 40, "WONK" 1;
+  font-size:clamp(1.5rem,3vw,2.2rem); line-height:1.15; letter-spacing:-.02em;
+  margin:.75rem 0 1rem; max-width:20ch; text-wrap:balance;
+}
+.copy{ margin:0 0 1rem; max-width:34rem; text-wrap:pretty; }
+.copy:last-child{ margin-bottom:0; }
+
+/* what we build: a ruled list with big numerals */
+.services{ list-style:none; margin:0; padding:0; }
+.services li{
+  display:grid; grid-template-columns:5rem minmax(0,1fr); gap:1rem 1.5rem; align-items:baseline;
+  padding:1.5rem 0; border-top:1px solid var(--rule); position:relative;
+}
+.services li::after{ content:""; position:absolute; left:0; top:-1px; height:1px; width:0; background:var(--ink); transition:width .6s var(--ease-out); }
+.services li:hover::after{ width:100%; }
+.services .num{
+  font-family:var(--display); font-weight:300; font-variation-settings:"opsz" 144, "SOFT" 0, "WONK" 0;
+  font-size:clamp(2.4rem,5vw,4.2rem); line-height:.9; color:var(--light); letter-spacing:-.03em;
+}
+.services h3{ font-family:var(--display); font-weight:400; font-variation-settings:"opsz" 48, "SOFT" 40, "WONK" 1; font-size:clamp(1.3rem,2.2vw,1.7rem); margin:0 0 .3rem; letter-spacing:-.01em; }
+.services p{ margin:0; color:var(--muted); max-width:34rem; text-wrap:pretty; }
+
+/* recent work: two ruled rows with the address up front */
+.work{ list-style:none; margin:0; padding:0; }
+.work li{ border-top:1px solid var(--rule); padding:1.4rem 0; }
+.work li:last-child{ border-bottom:1px solid var(--rule); }
+.work .url{ font-family:var(--mono); font-size:1rem; display:inline-flex; align-items:center; gap:.6em; margin-bottom:.4rem; }
+.work .url svg{ width:.85em; height:.85em; transition:transform .3s var(--ease-out); }
+.work .url:hover svg{ transform:translate(3px,-3px); }
+.work p{ margin:0; color:var(--muted); max-width:36rem; }
+
+/* contact */
+.form{ display:flex; flex-wrap:wrap; gap:.75rem; max-width:32rem; }
+.field{ flex:1 1 14rem; position:relative; }
+.field input{
+  width:100%; font-family:var(--body); font-size:1.0625rem; color:var(--ink); background:transparent;
+  border:0; border-bottom:1px solid var(--line); border-radius:0; padding:.75rem .1rem;
+}
+.field input:focus{ outline:none; }
+.field input::placeholder{ color:var(--light); }
+.field::after{ content:""; position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--ink); transform:scaleX(0); transform-origin:left; transition:transform .45s var(--ease-out); }
+.field:focus-within::after{ transform:scaleX(1); }
+.submit{ cursor:pointer; }
+.submit[disabled]{ opacity:.5; cursor:default; }
+.note{ font-family:var(--mono); font-size:.8rem; line-height:1.7; color:var(--muted); margin:1.1rem 0 0; max-width:32rem; }
+.note[data-state="error"]{ color:var(--ink); }
+.sent{ font-size:1.125rem; margin:0; max-width:32rem; }
+.sent span{ font-style:italic; }
+.hp{ position:absolute; left:-10000px; width:1px; height:1px; overflow:hidden; }
+#botcheck:not(.on){ display:none; }
+#botcheck.on{ flex:0 0 0; height:0; overflow:hidden; }
+#botcheck.on.showing{ flex:1 1 100%; height:auto; overflow:visible; margin:.35rem 0 .1rem; }
+.sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+
+/* closing: the name once more, then the colophon */
+.outro{ padding:clamp(4rem,12vh,8rem) 0 2rem; text-align:center; }
+.outro .logotype{ font-size:clamp(2rem, 7vw, 6rem); }
+.outro p{ margin:1.25rem auto 0; max-width:30rem; color:var(--muted); text-wrap:pretty; }
+.colophon{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:.5rem 1.5rem; padding:1.25rem 0 2rem; border-top:1px solid var(--rule); }
+
+/* scroll reveal for sections */
+.js .rise{ opacity:0; transform:translateY(14px); transition:opacity .7s ease, transform .9s var(--ease-out); transition-delay:calc(var(--i,0) * 90ms); }
+.js .section.in .rise{ opacity:1; transform:none; }
+
+@media (max-width:56rem){
+  .split{ grid-template-columns:1fr; }
+  .split > .side{ position:static; }
+  .nav a:not(.pill){ display:none; }
+}
+@media (max-width:40rem){
+  .services li{ grid-template-columns:3.25rem minmax(0,1fr); }
+  .corner.r{ display:none; }
+  .hero{ padding-bottom:4.5rem; }
+}
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  *{ animation:none !important; transition:none !important; }
+  .js .hero .l{ color:var(--ink); }
+  .js .hero .stack .plate{ --open:0; }
+  .js .hero .stack .plate path{ stroke-dashoffset:0; --o:var(--oc); }
+  .js .later,.js .rise,.js .statement .w{ opacity:1; transform:none; }
+  .js .arcs circle{ stroke-dashoffset:0; }
+  .corner .bar::after{ display:none; }
+}
+</style>
+</head>
+
+<body>
+
+<header class="masthead" id="masthead">
+  <div class="logotype" aria-label="TightStack"><a href="#top" aria-label="TightStack, back to top"><span class="l">T</span><span class="l i">ı<span class="tittle" aria-hidden="true"><svg class="stack" viewBox="0 0 200 200"><g class="plate" style="--i:1"><path style="--oc:.35" d="M20 110 L100 70 L180 110 L100 150Z"/></g><g class="plate" style="--i:2"><path style="--oc:.62" d="M20 80 L100 40 L180 80 L100 120Z"/></g><g class="plate" style="--i:3"><path style="--oc:1" d="M20 50 L100 10 L180 50 L100 90Z"/></g></svg></span></span><span class="l">g</span><span class="l">h</span><span class="l">t</span><span class="l">S</span><span class="l">t</span><span class="l">a</span><span class="l">c</span><span class="l">k</span></a></div>
+  <nav class="nav later" style="--d:300">
+    <a href="#build">What we build</a>
+    <a href="#events">Events</a>
+    <a href="#work">Work</a>
+    <a class="pill" href="#touch">Get in touch <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <section class="hero" aria-label="TightStack">
+    <div class="arcs" aria-hidden="true">
+      <svg viewBox="0 0 1000 1000">
+        <circle style="--i:0" cx="500" cy="500" r="110" pathLength="1"/>
+        <circle style="--i:1" cx="500" cy="500" r="190" pathLength="1"/>
+        <circle style="--i:2" cx="500" cy="500" r="290" pathLength="1"/>
+        <circle style="--i:3" cx="500" cy="500" r="410" pathLength="1"/>
+      </svg>
+    </div>
+
+    <h1 class="logotype" id="logotype" aria-label="TightStack"><span class="l" style="--n:1">T</span><span class="l i" style="--n:0">ı<span class="tittle" id="tittle" aria-hidden="true"><svg class="stack" id="stack" viewBox="0 0 200 200">
+      <line class="lead" x1="100" y1="-80" x2="100" y2="190"/>
+      <g class="plate base" style="--i:0"><path style="--oc:.3" pathLength="1" d="M20 140 L100 100 L180 140 L100 180Z"/><line class="tick" x1="190" y1="140" x2="206" y2="140"/></g>
+      <g class="plate" style="--i:1"><path style="--oc:.35"  pathLength="1" d="M20 110 L100 70 L180 110 L100 150Z"/><line class="tick" x1="190" y1="110" x2="206" y2="110"/></g>
+      <g class="plate" style="--i:2"><path style="--oc:.62" pathLength="1" d="M20 80 L100 40 L180 80 L100 120Z"/><line class="tick" x1="190" y1="80" x2="206" y2="80"/></g>
+      <g class="plate" style="--i:3"><path style="--oc:1"   pathLength="1" d="M20 50 L100 10 L180 50 L100 90Z"/><line class="tick" x1="190" y1="50" x2="206" y2="50"/></g>
+    </svg></span></span><span class="l" style="--n:2">g</span><span class="l" style="--n:3">h</span><span class="l" style="--n:4">t</span><span class="l" style="--n:5">S</span><span class="l" style="--n:6">t</span><span class="l" style="--n:7">a</span><span class="l" style="--n:8">c</span><span class="l" style="--n:9">k</span></h1>
+
+    <h2 class="tagline later" style="--d:0">Software that fits the job <em>and the budget</em>.</h2>
+    <p class="lede later" style="--d:120">TightStack is a small consulting studio in British Columbia. We design and build websites, registration systems and internal tools.</p>
+    <div class="cta later" style="--d:240">
+      <a class="pill solid" href="#touch">Tell us what you need <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      <a class="pill" href="#work">Recent work</a>
+    </div>
+
+    <p class="corner l later" style="--d:500"><span class="bar" aria-hidden="true"></span> Scroll</p>
+    <p class="corner r later" style="--d:500">Software consulting · British Columbia</p>
+  </section>
+
+  <div class="wrap">
+
+    <section class="section flush" aria-label="About TightStack">
+      <div class="split">
+        <p class="aside rise" style="--i:0">A small studio. One person you can reach, who stays on the job from the first call to the last fix.</p>
+        <p class="statement" id="statement">Tell us what you need and what you can spend, <span class="q">and we will work out what fits.</span></p>
+      </div>
+    </section>
+
+    <section class="section" id="build" aria-labelledby="build-h">
+      <div class="split">
+        <div class="side rise" style="--i:0">
+          <p class="label">What we build</p>
+          <h2 class="heading" id="build-h">Four kinds of work, priced to the job.</h2>
+        </div>
+        <ol class="services">
+          <li class="rise" style="--i:1"><span class="num" aria-hidden="true">01</span><div><h3>Websites and web apps</h3><p>From a single page to a full site, built so you can update it yourself.</p></div></li>
+          <li class="rise" style="--i:2"><span class="num" aria-hidden="true">02</span><div><h3>Conference and event registration</h3><p>Sign-up, payment and attendee lists, all in one place.</p></div></li>
+          <li class="rise" style="--i:3"><span class="num" aria-hidden="true">03</span><div><h3>Internal tools and integrations</h3><p>Dashboards, databases and the connections between the systems you already use.</p></div></li>
+          <li class="rise" style="--i:4"><span class="num" aria-hidden="true">04</span><div><h3>Advice</h3><p>A second opinion on a plan, a quote or an existing system, when that is all you need.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="events" aria-labelledby="events-h">
+      <div class="split">
+        <div class="side rise" style="--i:0">
+          <p class="label">Conferences and events</p>
+          <h2 class="heading" id="events-h">Registration and ticketing, built for your event.</h2>
+        </div>
+        <div>
+          <p class="copy rise" style="--i:1">Attendees sign up and pay in one place. You get one live list of who is coming and what they paid, with nothing to reconcile by hand.</p>
+          <p class="copy rise" style="--i:2">We build it to fit your event and your budget, and we stay on to support it for as long as you need us.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="work" aria-labelledby="work-h">
+      <div class="split">
+        <div class="side rise" style="--i:0">
+          <p class="label">Recent work</p>
+          <h2 class="heading" id="work-h">Two sites you can visit today.</h2>
+        </div>
+        <ul class="work">
+          <li class="rise" style="--i:1">
+            <a class="link url" href="https://conference.bcdramateachers.com">conference.bcdramateachers.com <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
+            <p>Registration and payment for the Association of BC Drama Educators&rsquo; annual conference.</p>
+          </li>
+          <li class="rise" style="--i:2">
+            <a class="link url" href="https://bcdramafestival.com">bcdramafestival.com <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
+            <p>The BC Drama Festival website: festival information, workshops, awards and sponsors.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="touch" aria-labelledby="touch-h">
+      <div class="split">
+        <div class="side rise" style="--i:0">
+          <p class="label">Get in touch</p>
+          <h2 class="heading" id="touch-h">Leave an email address and we will write to you.</h2>
+        </div>
+        <div class="rise" style="--i:1">
+          <form class="form" id="contact-form" novalidate>
+            <div class="field">
+              <label class="sr-only" for="email">Your email address</label>
+              <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@company.com" required>
+            </div>
+            <div class="hp" aria-hidden="true">
+              <label for="website">Leave this empty</label>
+              <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+            </div>
+            <div id="botcheck"></div>
+            <button class="pill solid submit" type="submit" id="submit">Email me</button>
+          </form>
+          <p class="note" id="note">It goes to a person, not a list. You will hear back in a day or two.</p>
+          <p class="sent" id="sent" hidden></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="outro section flush" aria-label="TightStack">
+      <div class="logotype rise" style="--i:0" aria-label="TightStack"><span class="l">T</span><span class="l i">ı<span class="tittle" aria-hidden="true"><svg class="stack" viewBox="0 0 200 200"><g class="plate" style="--i:1"><path style="--oc:.35" d="M20 110 L100 70 L180 110 L100 150Z"/></g><g class="plate" style="--i:2"><path style="--oc:.62" d="M20 80 L100 40 L180 80 L100 120Z"/></g><g class="plate" style="--i:3"><path style="--oc:1" d="M20 50 L100 10 L180 50 L100 90Z"/></g></svg></span></span><span class="l">g</span><span class="l">h</span><span class="l">t</span><span class="l">S</span><span class="l">t</span><span class="l">a</span><span class="l">c</span><span class="l">k</span></div>
+      <p class="rise" style="--i:1">Write to <a class="link" href="mailto:hello@tightstack.ca">hello@tightstack.ca</a> if you would rather start with an email.</p>
+    </section>
+
+    <footer class="colophon">
+      <p class="label">TightStack.ca</p>
+      <p class="label">British Columbia, Canada</p>
+      <p class="label">&copy; <span id="year">2026</span></p>
+    </footer>
+
+  </div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  var ENDPOINT = '';            /* review copy: no Worker behind it */
+  var INBOX    = 'hello@tightstack.ca';
+  var TURNSTILE_SITEKEY = '';   /* review copy */
+
+  var html = document.documentElement, body = document.body;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* the masthead-less stack and tittle outside the hero are static:
+     closed, with the gradient */
+  document.querySelectorAll('.masthead .plate path, .outro .plate path').forEach(function (p) {
+    p.style.setProperty('--o', p.style.getPropertyValue('--oc'));
+  });
+
+  /* ── entry ───────────────────────────────────────────────
+     The stack is born large in the middle of the sheet. Its
+     resting place is the dot on the i, so the opening state is
+     a transform away from where it already sits. */
+  window.scrollTo({ top:0, left:0, behavior:'instant' });
+
+  var tittle = document.getElementById('tittle');
+  var stack  = document.getElementById('stack');
+  var quick  = false;
+  try { quick = !!sessionStorage.getItem('ts-entry'); sessionStorage.setItem('ts-entry', '1'); } catch (e) {}
+  if (quick) html.classList.add('quick');
+
+  function opening(){
+    var r = tittle.getBoundingClientRect();
+    var W = r.width, unit = W / 200;
+    var big = Math.min(window.innerWidth * .46, window.innerHeight * .34, 300);   /* exploded height on screen */
+    var S = big / (236 * unit);
+    var cx = window.innerWidth / 2;
+    var cy = window.innerHeight / 2 + (100 - 62) * unit * S;                       /* exploded centroid sits 38 units above the box centre */
+    var dx = cx - (r.left + W / 2), dy = cy - (r.top + W / 2);
+    return { tf:'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px) scale(' + S.toFixed(3) + ')',
+             sw0:(1.25 / (unit * S)).toFixed(3), sw1:(1.25 / unit).toFixed(2) };
+  }
+
+  function finish(){
+    body.classList.add('go');
+    html.classList.remove('entry');
+    watch();
+  }
+
+  var begun = false;
+  function begin(){
+    if (begun) return;
+    begun = true;
+    if (reduced) {
+      body.classList.add('close', 'print');
+      stack.style.setProperty('--sw', opening().sw1);
+      tittle.style.transform = 'none';
+      finish();
+      return;
+    }
+    var o = opening();
+    if (quick) {                                    /* seen it this session: just print */
+      body.classList.add('close');
+      stack.style.setProperty('--sw', o.sw1);
+      tittle.style.transform = 'none';
+      setTimeout(function () { body.classList.add('print'); }, 150);
+      setTimeout(finish, 1000);
+      return;
+    }
+    tittle.style.transition = 'none';               /* jump to the opening state; only the landing transitions */
+    tittle.style.transform = o.tf;
+    stack.style.setProperty('--sw', o.sw0);
+    void tittle.offsetWidth;                        /* commit it before anything transitions */
+    tittle.style.transition = '';
+    setTimeout(function () { body.classList.add('ink'); },    80);
+    setTimeout(function () { body.classList.add('close'); }, 1400);
+    setTimeout(function () {
+      body.classList.add('land');
+      tittle.style.transform = 'none';
+      stack.style.setProperty('--sw', o.sw1);
+    }, 2100);
+    setTimeout(function () { body.classList.add('print'); }, 2850);
+    setTimeout(finish, 3650);
+  }
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(begin);
+    setTimeout(begin, 1600);
+  } else { begin(); }
+
+  /* ── scroll: masthead, statement, sections ───────────── */
+  var masthead = document.getElementById('masthead');
+  var hero = document.querySelector('.hero');
+  var statement = document.getElementById('statement');
+
+  /* split the statement into words so they can arrive one at a time */
+  (function split(){
+    var n = 0;
+    function walk(node){
+      if (node.nodeType === 3) {
+        var frag = document.createDocumentFragment();
+        node.textContent.split(/(\s+)/).forEach(function (part) {
+          if (!part) return;
+          if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+          var s = document.createElement('span');
+          s.className = 'w'; s.style.setProperty('--n', n++); s.textContent = part;
+          frag.appendChild(s);
+        });
+        node.parentNode.replaceChild(frag, node);
+      } else if (node.nodeType === 1) {
+        [].slice.call(node.childNodes).forEach(walk);
+      }
+    }
+    walk(statement);
+  })();
+
+  function watch(){
+    if (!('IntersectionObserver' in window)) {
+      masthead.classList.add('scrolled');
+      document.querySelectorAll('.section').forEach(function (s) { s.classList.add('in'); });
+      statement.classList.add('in');
+      return;
+    }
+    new IntersectionObserver(function (es) {
+      es.forEach(function (e) { masthead.classList.toggle('scrolled', !e.isIntersecting); });
+    }, { rootMargin: '-80px 0px 0px 0px', threshold: 0 }).observe(document.getElementById('logotype'));
+
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.1 });
+    document.querySelectorAll('.section').forEach(function (s) { io.observe(s); });
+    io.observe(statement);
+  }
+
+  /* ── bot check (unchanged from the live page) ─────────── */
+  var tsWidget = null;
+  if (TURNSTILE_SITEKEY && ENDPOINT && !window.__tsLoaded) {
+    window.__tsLoaded = true;
+    var holder = document.getElementById('botcheck');
+    holder.classList.add('on');
+    window.onTurnstileReady = function () {
+      try {
+        tsWidget = window.turnstile.render(holder, {
+          sitekey: TURNSTILE_SITEKEY, theme: 'light', appearance: 'interaction-only', 'refresh-expired': 'auto',
+          'before-interactive-callback': function () { holder.classList.add('showing'); },
+          'after-interactive-callback':  function () { holder.classList.remove('showing'); }
+        });
+      } catch (e) { holder.classList.remove('on'); }
+    };
+    var ts = document.createElement('script');
+    ts.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileReady';
+    ts.async = true; ts.defer = true;
+    document.head.appendChild(ts);
+  }
+
+  /* ── form (unchanged from the live page) ──────────────── */
+  var form = document.getElementById('contact-form'), input = document.getElementById('email');
+  var button = document.getElementById('submit'), note = document.getElementById('note'), sent = document.getElementById('sent');
+  var DEFAULT_NOTE = note.textContent, valid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  input.addEventListener('input', function () {
+    if (note.getAttribute('data-state') === 'error') { note.removeAttribute('data-state'); note.textContent = DEFAULT_NOTE; }
+  });
+  function fail(m){ note.setAttribute('data-state','error'); note.textContent = m; }
+  function done(address){
+    form.hidden = true; note.hidden = true; sent.hidden = false;
+    sent.innerHTML = 'Thank you. We will write to <span></span> shortly.';
+    sent.querySelector('span').textContent = address;
+  }
+  function undo(){ form.hidden = false; note.hidden = false; sent.hidden = true; button.disabled = false; button.textContent = 'Email me'; }
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var address = input.value.trim();
+    if (!valid.test(address)) { fail('That address is missing something. Check it and try again.'); input.focus(); return; }
+    if (TURNSTILE_SITEKEY && ENDPOINT) {
+      var tok = form.querySelector('[name="cf-turnstile-response"]');
+      if (!tok || !tok.value) { fail('The bot check is still loading. Give it a second and try again.'); return; }
+    }
+    if (!ENDPOINT) {
+      window.location.href = 'mailto:' + INBOX + '?subject=' + encodeURIComponent('Hello from TightStack.ca') +
+        '&body=' + encodeURIComponent('Please write to me at ' + address + '.\n\n');
+      done(address); return;
+    }
+    var payload = new FormData(form);
+    done(address);
+    fetch(ENDPOINT, { method:'POST', headers:{ 'Accept':'application/json' }, body:payload })
+      .then(function (res){ if (!res.ok) throw new Error(res.status); })
+      .catch(function (err){
+        undo();
+        fail(err.message === '429' ? 'Give it a minute and try again.'
+           : err.message === '403' ? 'That did not pass the bot check. Reload and try again.'
+           : 'That did not send. Write to ' + INBOX + ' and we will pick it up there.');
+        if (tsWidget !== null && window.turnstile && window.turnstile.reset) { try { window.turnstile.reset(tsWidget); } catch (e) {} }
+      });
+  });
+})();
+</script>
+</body>
+</html>
