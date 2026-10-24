@@ -209,7 +209,8 @@ a{ color:inherit; }
 }
 .tagline em{ font-style:italic; font-weight:400; }
 .lede{ font-size:1.0625rem; color:var(--muted); max-width:36rem; margin:0 0 2rem; text-wrap:pretty; }
-.cta{ display:flex; flex-wrap:wrap; gap:.75rem; justify-content:center; }
+.cta{ display:flex; flex-wrap:wrap; gap:.75rem; justify-content:center; position:relative; z-index:1; }
+.cta .pill:not(.solid):not(:hover){ background:var(--paper); }   /* the buttons sit in front of the rings */
 
 .corner{
   position:absolute; bottom:1.4rem; display:flex; align-items:center; gap:.6rem;
@@ -441,9 +442,9 @@ a{ color:inherit; }
         </div>
         <ul class="work">
           <li class="rise" style="--i:1">
-            <a class="shot" href="https://conference.bcdramateachers.com" tabindex="-1" aria-hidden="true"><img src="img/abcde-conference.jpg" width="960" height="600" alt="" loading="lazy"></a>
-            <a class="link url" href="https://conference.bcdramateachers.com">conference.bcdramateachers.com <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
-            <p>Registration and payment for the Association of BC Drama Educators&rsquo; annual conference.</p>
+            <a class="shot" href="https://conference.thesa.org" tabindex="-1" aria-hidden="true"><img src="img/thesa-conference.jpg" width="960" height="600" alt="" loading="lazy"></a>
+            <a class="link url" href="https://conference.thesa.org">conference.thesa.org <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
+            <p>Registration and payment for the Teachers of Home Economics Specialist Association&rsquo;s annual conference, in person and online.</p>
           </li>
           <li class="rise" style="--i:2">
             <a class="shot" href="https://bcdramafestival.com" tabindex="-1" aria-hidden="true"><img src="img/bc-drama-festival.jpg" width="960" height="600" alt="" loading="lazy"></a>
