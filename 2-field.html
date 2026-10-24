@@ -196,21 +196,28 @@ a{ color:inherit; }
 .figure{ width:min(22rem, 100%); aspect-ratio:1; margin:0 auto; position:relative; }
 .figure svg{ display:block; width:100%; height:100%; overflow:visible; }
 .figure .static .plate{ --open:1; transition:none; }
-.figure .static .plate path{ --o:1; stroke-width:1.1; }
-.figure .static .lead,.figure .static .tick{ opacity:.6; stroke-width:1.1; }
+.figure .static .plate path{ --o:1; stroke-width:1.5; }
+.figure .static .lead,.figure .static .tick{ opacity:.6; stroke-width:1.5; }
 .figure .static text{ opacity:1; }
 .fly .figure .static{ visibility:hidden; }          /* the flying stack stands in for it */
 .figure .note{ position:absolute; left:0; right:0; bottom:-2.5rem; text-align:center; }
+/* while the stack is beside the list, the row whose plate is lifted reads in chalk and the rest wait */
+.fly .services li{ --hp:100%; --np:0%; }
+.fly .services h3{ color:color-mix(in srgb, var(--chalk) var(--hp), var(--muted)); }
+.fly .services .num{ color:color-mix(in srgb, var(--chalk) var(--np), var(--line)); }
 
 /* the flying stack: fixed, placed by script */
-.flyer{ position:fixed; left:0; top:0; width:200px; height:200px; transform-origin:0 0; pointer-events:none; z-index:15; visibility:hidden; }
+.flyer{ position:fixed; left:0; top:0; width:200px; height:200px; transform-origin:0 0; pointer-events:none; z-index:25; visibility:hidden; }
 .flyer svg{ display:block; width:100%; height:100%; overflow:visible; }
 .flyer .plate,.flyer .plate path,.flyer .lead,.flyer .tick,.flyer text{ transition:none; }
 
 /* recent work */
-.work{ list-style:none; margin:0; padding:0; }
-.work li{ border-top:1px solid var(--rule); padding:1.4rem 0; }
-.work li:last-child{ border-bottom:1px solid var(--rule); }
+.work{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fit, minmax(15rem, 1fr)); gap:2rem clamp(1.5rem,3vw,3rem); }
+.work li{ border-top:1px solid var(--rule); padding:1.4rem 0 0; }
+/* a screenshot printed the way the page is: chalk on the field */
+.shot{ display:block; position:relative; aspect-ratio:16/10; overflow:hidden; margin:0 0 1.1rem; background:var(--field); border:1px solid var(--rule); }
+.shot img{ display:block; width:100%; height:100%; object-fit:cover; object-position:top; filter:grayscale(1) contrast(1.08) brightness(.92); mix-blend-mode:screen; opacity:.82; transition:opacity .4s ease; }
+.shot:hover img,.work li:hover .shot img{ opacity:1; }
 .work .url{ font-family:var(--mono); font-size:1rem; display:inline-flex; align-items:center; gap:.6em; margin-bottom:.4rem; }
 .work .url svg{ width:.85em; height:.85em; transition:transform .3s var(--ease-out); }
 .work .url:hover svg{ transform:translate(3px,-3px); }
@@ -368,10 +375,12 @@ a{ color:inherit; }
         </div>
         <ul class="work">
           <li class="rise" style="--i:1">
+            <a class="shot" href="https://conference.bcdramateachers.com" tabindex="-1" aria-hidden="true"><img src="img/abcde-conference.jpg" width="960" height="600" alt="" loading="lazy"></a>
             <a class="link url" href="https://conference.bcdramateachers.com">conference.bcdramateachers.com <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
             <p>Registration and payment for the Association of BC Drama Educators&rsquo; annual conference.</p>
           </li>
           <li class="rise" style="--i:2">
+            <a class="shot" href="https://bcdramafestival.com" tabindex="-1" aria-hidden="true"><img src="img/bc-drama-festival.jpg" width="960" height="600" alt="" loading="lazy"></a>
             <a class="link url" href="https://bcdramafestival.com">bcdramafestival.com <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
             <p>The BC Drama Festival website: festival information, workshops, awards and sponsors.</p>
           </li>
@@ -442,7 +451,7 @@ a{ color:inherit; }
   var tittle = document.getElementById('tittle');
   var stack  = document.getElementById('stack');
   var quick = false;
-  try { quick = !!sessionStorage.getItem('ts-entry'); sessionStorage.setItem('ts-entry', '1'); } catch (e) {}
+  /* the full entry plays on every load; set quick = true to skip to the printed name */
   if (quick) html.classList.add('quick');
 
   function opening(){
@@ -525,22 +534,31 @@ a{ color:inherit; }
     var r = el.getBoundingClientRect(), y = window.pageYOffset;
     return { cx:r.left + r.width / 2, cy:r.top + r.height / 2 + y, w:r.width, top:r.top + y, bottom:r.bottom + y };
   }
+  var mastTittle = document.querySelector('.masthead .tittle');
   function layout(){
-    if (reduced || !wide.matches) { L = null; html.classList.remove('fly'); flyer.style.visibility = 'hidden';
-      heroStack.style.visibility = ''; outroStack.style.visibility = ''; return; }
+    if (reduced || !wide.matches) {
+      L = null; html.classList.remove('fly'); flyer.style.visibility = 'hidden';
+      heroStack.style.visibility = ''; outroStack.style.visibility = ''; mastTittle.style.visibility = '';
+      rows.forEach(function (r) { r.style.removeProperty('--hp'); r.style.removeProperty('--np'); });
+      return;
+    }
     var vh = window.innerHeight;
     var A = pageRect(tittle), C = pageRect(outroTittle);
     var sec = pageRect(document.getElementById('build'));
     var rowTops = rows.map(function (r) { return pageRect(r).top; });
     var last = pageRect(rows[rows.length - 1]);
     var max = document.documentElement.scrollHeight - vh;
+    var y4 = last.bottom - vh * .25;                 /* leaves the figure        */
+    var y5 = Math.min(C.top - vh * .5, max - 2);     /* lands in the outro       */
+    var y6 = Math.min(y4 + vh * .35, y5 - 10);       /* docked in the masthead   */
+    var y7 = Math.max(y6, y5 - vh * .6);             /* leaves the masthead      */
     L = {
       vh:vh, A:A, C:C, rowTops:rowTops,
       y1: 24,
-      y2: Math.max(200, sec.top - vh * .55),
-      y3: last.bottom - vh * .6,
-      y4: last.bottom - vh * .25,
-      y5: Math.min(C.top - vh * .5, max - 2)
+      y2: Math.max(200, sec.top - vh * .55),         /* arrives beside the list  */
+      y3: last.bottom - vh * .6,                     /* starts closing           */
+      y4: y4, y5: y5, y6: y6, y7: y7,
+      rest: (function () { var st = parseFloat(getComputedStyle(figure.parentNode).top); return isNaN(st) ? vh * .5 - 176 : st; })()
     };
     html.classList.add('fly');
   }
@@ -548,11 +566,10 @@ a{ color:inherit; }
   var smooth = function (t) { t = clamp(t); return t * t * (3 - 2 * t); };
   var lerp = function (a, b, t) { return a + (b - a) * t; };
 
-  function place(cx, cy, w){
+  function place(cx, cy, w, px){
     var s = w / 200;
     flyer.style.transform = 'translate(' + (cx - 100 * s).toFixed(1) + 'px,' + (cy - 100 * s).toFixed(1) + 'px) scale(' + s.toFixed(4) + ')';
-    /* a hairline whether it is a dot or a drawing */
-    var px = 1.25;
+    /* a hairline whether it is a dot or a drawing; px matches whatever it is about to become */
     flyer.style.setProperty('--sw', (px / s).toFixed(3));
   }
 
@@ -560,38 +577,52 @@ a{ color:inherit; }
     queued = false;
     if (!L) return;
     var y = window.pageYOffset, vh = L.vh;
-    if (y < L.y1 || y >= L.y5) {
-      flyer.style.visibility = 'hidden';
-      heroStack.style.visibility = y < L.y1 ? '' : 'hidden';
-      outroStack.style.visibility = y >= L.y5 ? '' : 'hidden';
-      return;
-    }
-    heroStack.style.visibility = 'hidden';
-    outroStack.style.visibility = 'hidden';
+
+    /* which row the stack is on: the plate lifts and the row reads in chalk */
+    var closing = smooth((y - L.y3) / (vh * .3));
+    var zone = y < L.y2 ? 0 : 1 - closing;
+    var reach = rows.map(function (r, i) { return y < L.y2 ? 0 : smooth((y - (L.rowTops[i] - vh * .72)) / (vh * .16)); });
+    rows.forEach(function (r, i) {
+      var cur = clamp(reach[i] - (i + 1 < reach.length ? reach[i + 1] : 0));
+      r.style.setProperty('--hp', (100 * (1 - zone * (1 - cur))).toFixed(0) + '%');
+      r.style.setProperty('--np', (100 * zone * cur).toFixed(0) + '%');
+    });
+
+    /* who holds the stack right now */
+    var docked = y >= L.y6 && y < L.y7;
+    heroStack.style.visibility  = y < L.y1  ? '' : 'hidden';
+    outroStack.style.visibility = y >= L.y5 ? '' : 'hidden';
+    mastTittle.style.visibility = docked    ? '' : 'hidden';
+    if (y < L.y1 || y >= L.y5 || docked) { flyer.style.visibility = 'hidden'; return; }
     flyer.style.visibility = 'visible';
 
+    /* the figure column is sticky; the stack sits where it rests, and stays put when the column is pushed off */
     var fr = figure.getBoundingClientRect();
-    var B = { cx:fr.left + fr.width / 2, cy:fr.top + fr.height / 2, w:fr.width * .86 };
+    var B = { cx:fr.left + fr.width / 2, cy:Math.max(fr.top + fr.height / 2, L.rest + fr.height / 2), w:fr.width * .86 };
+    var mr = mastTittle.getBoundingClientRect();
+    var M = { cx:mr.left + mr.width / 2, cy:mr.top + mr.height / 2, w:mr.width };
     var Av = { cx:L.A.cx, cy:L.A.cy - y, w:L.A.w };
     var Cv = { cx:L.C.cx, cy:L.C.cy - y, w:L.C.w };
-    var cx, cy, w, t;
-    if (y < L.y2) {
+    var pxB = 1.7, pxM = .7, pxC = L.C.w / 20;
+    var cx, cy, w, px, t;
+    if (y < L.y2) {                                   /* hero → figure */
       t = smooth((y - L.y1) / (L.y2 - L.y1));
-      cx = lerp(Av.cx, B.cx, t); cy = lerp(Av.cy, B.cy, t); w = lerp(Av.w, B.w, t);
-    } else if (y < L.y4) {
-      cx = B.cx; cy = B.cy; w = B.w;
-    } else {
-      t = smooth((y - L.y4) / (L.y5 - L.y4));
-      cx = lerp(B.cx, Cv.cx, t); cy = lerp(B.cy, Cv.cy, t); w = lerp(B.w, Cv.w, t);
+      cx = lerp(Av.cx, B.cx, t); cy = lerp(Av.cy, B.cy, t); w = lerp(Av.w, B.w, t); px = lerp(1.25, pxB, t);
+    } else if (y < L.y4) {                            /* beside the list */
+      cx = B.cx; cy = B.cy; w = B.w; px = pxB;
+    } else if (y < L.y6) {                            /* figure → masthead */
+      t = smooth((y - L.y4) / (L.y6 - L.y4));
+      cx = lerp(B.cx, M.cx, t); cy = lerp(B.cy, M.cy, t); w = lerp(B.w, M.w, t); px = lerp(pxB, pxM, t);
+    } else {                                          /* masthead → outro */
+      t = smooth((y - L.y7) / (L.y5 - L.y7));
+      cx = lerp(M.cx, Cv.cx, t); cy = lerp(M.cy, Cv.cy, t); w = lerp(M.w, Cv.w, t); px = lerp(pxM, pxC, t);
     }
-    place(cx, cy, w);
+    place(cx, cy, w, px);
 
     /* plates lift off one per service, then settle before the stack moves on */
-    var closing = smooth((y - L.y3) / (vh * .3));
     var maxOpen = 0;
     flyPlates.forEach(function (g, i) {
-      var open = smooth((y - (L.rowTops[i] - vh * .72)) / (vh * .16)) * (1 - closing);
-      if (y < L.y2) open = 0;
+      var open = reach[i] * (1 - closing);
       maxOpen = Math.max(maxOpen, open);
       g.style.transform = 'translateY(' + (-22 * i * open).toFixed(2) + 'px)';
       var path = g.firstElementChild;
