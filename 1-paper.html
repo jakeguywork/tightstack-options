@@ -17,16 +17,18 @@
 
 <style>
 /* ═════════════════════════════════════════════════════════
-   TIGHTSTACK — OPTION 1 · PAPER
+   TIGHTSTACK: PAPER
    The logo as it was drawn: navy on white. The site opens on
    the stack alone, in the middle of a blank sheet. It closes,
    shrinks to become the dot on the i, and the name prints
    around it. Only then does the page arrive.
 
-   Entry (first visit in a tab, ~3.6 s):
-     ink the stack → close it → it travels to the i → the
-     name prints → the rest of the hero rises.
-   Repeat visits in the same tab get the short version.
+   Entry (every load, about 3.6 s):
+     ink the stack, close it, it travels to the i, the name
+     prints, the rest of the hero rises.
+   Then the drawing follows the scroll: a ruler in the left
+   margin tracks the sheet, and the exploded stack beside
+   What we build settles one plate per kind of work read.
    ═════════════════════════════════════════════════════════ */
 
 :root{
@@ -266,7 +268,7 @@ a{ color:inherit; }
 }
 .services h3{ font-family:var(--display); font-weight:400; font-variation-settings:"opsz" 48, "SOFT" 40, "WONK" 1; font-size:clamp(1.3rem,2.2vw,1.7rem); margin:0 0 .3rem; letter-spacing:-.01em; }
 .services p{ margin:0; color:var(--muted); max-width:34rem; text-wrap:pretty; }
-/* the plan: the stack drawn exploded, one plate per kind of work */
+/* the plan: the stack drawn exploded; each kind of work read settles a plate */
 .plan{ width:min(15rem, 100%); aspect-ratio:1; margin:2.5rem 0 0; }
 .plan svg{ display:block; width:100%; height:100%; overflow:visible; }
 .plan .plate{ --open:1; transition:none; }
@@ -279,7 +281,7 @@ a{ color:inherit; }
 .plan-on .services .num{ color:color-mix(in srgb, var(--ink) var(--np), var(--light)); }
 
 /* recent work: two ruled rows with the address up front */
-.work{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fit, minmax(15rem, 1fr)); gap:2rem clamp(1.5rem,3vw,3rem); }
+.work{ list-style:none; margin:1.25rem 0 0; padding:0; display:grid; grid-template-columns:repeat(auto-fit, minmax(15rem, 1fr)); gap:2rem clamp(1.5rem,3vw,3rem); }
 .work li{ border-top:1px solid var(--rule); padding:1.4rem 0 0; }
 .shot{ display:block; aspect-ratio:16/10; overflow:hidden; margin:0 0 1.1rem; border:1px solid var(--rule); background:#fff; }
 .shot img{ display:block; width:100%; height:100%; object-fit:cover; object-position:top; }
@@ -317,6 +319,20 @@ a{ color:inherit; }
 .outro p{ margin:1.25rem auto 0; max-width:30rem; color:var(--muted); text-wrap:pretty; }
 .colophon{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:.5rem 1.5rem; padding:1.25rem 0 2rem; border-top:1px solid var(--rule); }
 
+/* ruler: a scale in the left margin that tracks how far down the
+   sheet you are, with a mark at each section. Wide screens only;
+   it lives in the gutter. */
+.ruler{ position:fixed; top:20vh; bottom:20vh; left:calc(var(--gutter) / 2); width:1px; pointer-events:none; display:none; }
+.ruler-line{ position:absolute; inset:0; background:var(--line); opacity:.55; transform:scaleY(0); transform-origin:top; }
+.go .ruler-line{ animation:rule-y 1.2s cubic-bezier(.32,.9,.28,1) forwards; animation-delay:.2s; }
+@keyframes rule-y{ to{ transform:scaleY(1); } }
+.ruler-mark{ position:absolute; left:-3px; width:7px; height:1px; background:var(--line); top:calc(var(--at,0) * 100%); }
+.ruler-tick{ position:absolute; left:-6px; width:13px; height:1px; background:var(--ink); top:calc(var(--sp,0) * 100%); }
+.ruler .fade{ opacity:0; }
+.go .ruler .fade{ animation:appear .85s ease forwards; animation-delay:var(--d, 0ms); }
+@keyframes appear{ to{ opacity:1; } }
+@media (min-width:64rem){ .ruler{ display:block; } }
+
 /* scroll reveal for sections */
 .js .rise{ opacity:0; transform:translateY(14px); transition:opacity .7s ease, transform .9s var(--ease-out); transition-delay:calc(var(--i,0) * 90ms); }
 .js .section.in .rise{ opacity:1; transform:none; }
@@ -341,11 +357,19 @@ a{ color:inherit; }
   .js .later,.js .rise,.js .statement .w{ opacity:1; transform:none; }
   .js .arcs circle{ stroke-dashoffset:0; }
   .corner .bar::after{ display:none; }
+  .ruler-line{ transform:scaleY(1); }
+  .ruler .fade{ opacity:1; }
 }
 </style>
 </head>
 
 <body>
+
+<!-- ruler in the left margin; the script adds a mark per section -->
+<div class="ruler" id="ruler" aria-hidden="true">
+  <span class="ruler-line"></span>
+  <span class="ruler-tick fade" style="--d:1000ms"></span>
+</div>
 
 <header class="masthead" id="masthead">
   <div class="logotype" aria-label="TightStack"><a href="#top" aria-label="TightStack, back to top"><span class="l">T</span><span class="l i">ı<span class="tittle" aria-hidden="true"><svg class="stack" viewBox="0 0 200 200"><g class="plate" style="--i:1"><path style="--oc:.35" d="M20 110 L100 70 L180 110 L100 150Z"/></g><g class="plate" style="--i:2"><path style="--oc:.62" d="M20 80 L100 40 L180 80 L100 120Z"/></g><g class="plate" style="--i:3"><path style="--oc:1" d="M20 50 L100 10 L180 50 L100 90Z"/></g></svg></span></span><span class="l">g</span><span class="l">h</span><span class="l">t</span><span class="l">S</span><span class="l">t</span><span class="l">a</span><span class="l">c</span><span class="l">k</span></a></div>
@@ -426,32 +450,25 @@ a{ color:inherit; }
         <div class="side rise" style="--i:0">
           <p class="label">Conferences and events</p>
           <h2 class="heading" id="events-h">Registration and ticketing, built for your event.</h2>
+          <p class="copy">Attendees sign up and pay in one place. You get one live list of who is coming and what they paid, with nothing to reconcile by hand.</p>
+          <p class="copy">We build it to fit your event and your budget, and we stay on to support it for as long as you need us.</p>
         </div>
-        <div>
-          <p class="copy rise" style="--i:1">Attendees sign up and pay in one place. You get one live list of who is coming and what they paid, with nothing to reconcile by hand.</p>
-          <p class="copy rise" style="--i:2">We build it to fit your event and your budget, and we stay on to support it for as long as you need us.</p>
-        </div>
-      </div>
-    </section>
 
-    <section class="section" id="work" aria-labelledby="work-h">
-      <div class="split">
-        <div class="side rise" style="--i:0">
+        <div class="rise" id="work" style="--i:1">
           <p class="label">Recent work</p>
-          <h2 class="heading" id="work-h">Two sites you can visit today.</h2>
+          <ul class="work">
+            <li>
+              <a class="shot" href="https://conference.thesa.org" tabindex="-1" aria-hidden="true"><img src="img/thesa-conference.jpg" width="960" height="600" alt="" loading="lazy"></a>
+              <a class="link url" href="https://conference.thesa.org">conference.thesa.org <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
+              <p>Registration and payment for the Teachers of Home Economics Specialist Association&rsquo;s annual conference, in person and online.</p>
+            </li>
+            <li>
+              <a class="shot" href="https://bcdramafestival.com" tabindex="-1" aria-hidden="true"><img src="img/bc-drama-festival.jpg" width="960" height="600" alt="" loading="lazy"></a>
+              <a class="link url" href="https://bcdramafestival.com">bcdramafestival.com <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
+              <p>The BC Drama Festival website: festival information, workshops, awards and sponsors.</p>
+            </li>
+          </ul>
         </div>
-        <ul class="work">
-          <li class="rise" style="--i:1">
-            <a class="shot" href="https://conference.thesa.org" tabindex="-1" aria-hidden="true"><img src="img/thesa-conference.jpg" width="960" height="600" alt="" loading="lazy"></a>
-            <a class="link url" href="https://conference.thesa.org">conference.thesa.org <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
-            <p>Registration and payment for the Teachers of Home Economics Specialist Association&rsquo;s annual conference, in person and online.</p>
-          </li>
-          <li class="rise" style="--i:2">
-            <a class="shot" href="https://bcdramafestival.com" tabindex="-1" aria-hidden="true"><img src="img/bc-drama-festival.jpg" width="960" height="600" alt="" loading="lazy"></a>
-            <a class="link url" href="https://bcdramafestival.com">bcdramafestival.com <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
-            <p>The BC Drama Festival website: festival information, workshops, awards and sponsors.</p>
-          </li>
-        </ul>
       </div>
     </section>
 
@@ -540,6 +557,7 @@ a{ color:inherit; }
     body.classList.add('go');
     html.classList.remove('entry');
     watch();
+    measure();
     fxFrame();
   }
 
@@ -595,6 +613,23 @@ a{ color:inherit; }
   var planLead = plan.querySelector('.lead');
   var rows = [].slice.call(document.querySelectorAll('.services li'));
   var arcsSvg = document.querySelector('.arcs svg'), arcs = document.querySelector('.arcs');
+
+  /* ── the ruler: a mark per section, a tick that tracks the scroll ── */
+  var ruler = document.getElementById('ruler');
+  var rulerSections = [].slice.call(document.querySelectorAll('.section:not(.flush)'));
+  var rulerMarks = rulerSections.map(function () {
+    var m = document.createElement('span');
+    m.className = 'ruler-mark fade'; m.style.setProperty('--d', '1000ms');
+    ruler.appendChild(m); return m;
+  });
+  var maxScroll = 1;
+  function measure(){
+    var y = window.pageYOffset;
+    maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    rulerSections.forEach(function (s, i) {
+      rulerMarks[i].style.setProperty('--at', Math.min(1, (s.getBoundingClientRect().top + y) / maxScroll).toFixed(4));
+    });
+  }
   var wide = window.matchMedia('(min-width:56rem)');
   var clamp = function (v) { return v < 0 ? 0 : v > 1 ? 1 : v; };
   var smooth = function (t) { t = clamp(t); return t * t * (3 - 2 * t); };
@@ -602,6 +637,7 @@ a{ color:inherit; }
   function fxFrame(){
     queued = false;
     var vh = window.innerHeight, y = window.pageYOffset;
+    ruler.style.setProperty('--sp', Math.min(1, y / maxScroll).toFixed(4));
     if (!reduced) {                                   /* the rings drift out and fade as the hero leaves */
       var p = smooth(y / (vh * .9));
       arcsSvg.style.transform = 'translate(-50%,-50%) scale(' + (1 + p * .35).toFixed(3) + ')';
@@ -620,23 +656,28 @@ a{ color:inherit; }
     var reach = rows.map(function (r) { return smooth((vh * .72 - r.getBoundingClientRect().top) / (vh * .16)); });
     var last = rows[rows.length - 1].getBoundingClientRect();
     var zone = reach[0] * (1 - smooth((vh * .55 - last.bottom) / (vh * .25)));
-    var maxOpen = 0;
+    /* the plan arrives exploded. Reading a row closes the gap under its
+       plate and the plates above come down with it, so the stack is tight
+       once all four have been read, and opens again on the way back up. */
+    var lift = 0, maxGap = 0;
     rows.forEach(function (r, i) {
       var cur = clamp(reach[i] - (i + 1 < reach.length ? reach[i + 1] : 0));
       r.style.setProperty('--hp', (100 * (1 - zone * (1 - cur))).toFixed(0) + '%');
       r.style.setProperty('--np', (100 * zone * cur).toFixed(0) + '%');
-      var g = planPlates[i], open = reach[i];
-      maxOpen = Math.max(maxOpen, open);
-      g.style.transform = 'translateY(' + (-22 * i * open).toFixed(2) + 'px)';
-      var showTick = open > .6 ? (open - .6) / .4 : 0;
-      g.children[1].style.opacity = (showTick * .7).toFixed(3);
-      g.children[2].style.opacity = showTick.toFixed(3);
+      var g = planPlates[i], gap = 1 - reach[i];
+      if (i > 0) lift += 22 * gap;
+      maxGap = Math.max(maxGap, gap);
+      g.style.transform = 'translateY(' + (-lift).toFixed(2) + 'px)';
+      var show = gap > .4 ? (gap - .4) / .6 : 0;     /* the tick and number leave as the gap closes */
+      g.children[1].style.opacity = (show * .7).toFixed(3);
+      g.children[2].style.opacity = show.toFixed(3);
     });
-    planLead.style.opacity = (maxOpen * .55).toFixed(3);
+    planLead.style.opacity = (maxGap * .55).toFixed(3);
   }
   function onScroll(){ if (queued) return; queued = true; requestAnimationFrame(fxFrame); }
   window.addEventListener('scroll', onScroll, { passive:true });
-  window.addEventListener('resize', fxFrame);
+  window.addEventListener('resize', function () { measure(); fxFrame(); });
+  window.addEventListener('load',   function () { measure(); fxFrame(); });
 
   (function split(){
     var n = 0;
