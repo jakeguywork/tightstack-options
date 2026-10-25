@@ -23,7 +23,7 @@
    shrinks to become the dot on the i, and the name prints
    around it. Only then does the page arrive.
 
-   Entry (every load, about 3.6 s):
+   Entry (once per visitor, about 3.6 s; ?entry replays it):
      ink the stack, close it, it travels to the i, the name
      prints, the rest of the hero rises.
    Then the drawing follows the scroll: a ruler in the left
@@ -132,6 +132,12 @@ a{ color:inherit; }
 .js .hero .stack .plate path{ --o:1; stroke-dasharray:1; stroke-dashoffset:1; }
 .js.quick .hero .stack .plate,
 .js.quick .hero .stack .plate path{ transition:none; }
+/* a return visit opens on the printed name, nothing to wait for */
+.js.quick .hero .l{ color:var(--ink); animation:none; }
+.js.quick .hero .stack .plate{ --open:0; }
+.js.quick .hero .stack .plate path{ stroke-dashoffset:0; --o:var(--oc); }
+.js.quick .hero .stack .base path{ --o:0; }
+.js.quick .arcs circle{ stroke-dashoffset:0; animation:none; }
 
 .ink .hero .stack .plate path{
   animation:ink .6s cubic-bezier(.4,0,.2,1) forwards;
@@ -183,9 +189,6 @@ a{ color:inherit; }
 .masthead .logotype{ font-size:1.6rem; opacity:0; transform:translateY(6px); transition:opacity .4s, transform .5s var(--ease-out); pointer-events:none; }
 .masthead.scrolled .logotype{ opacity:1; transform:none; pointer-events:auto; }
 .masthead .logotype a{ text-decoration:none; }
-.nav{ display:flex; align-items:center; gap:clamp(1rem,3vw,2.25rem); }
-.nav a:not(.pill){ font-family:var(--mono); font-size:.75rem; letter-spacing:.12em; text-transform:uppercase; text-decoration:none; color:var(--muted); }
-.nav a:not(.pill):hover{ color:var(--ink); }
 
 /* ═══ HERO ═══════════════════════════════════════════════ */
 .hero{
@@ -210,7 +213,7 @@ a{ color:inherit; }
   margin:clamp(2rem,5vh,3.25rem) 0 1rem; max-width:22ch; text-wrap:balance;
 }
 .tagline em{ font-style:italic; font-weight:400; }
-.lede{ font-size:1.0625rem; color:var(--muted); max-width:36rem; margin:0 0 2rem; text-wrap:pretty; }
+.lede{ font-size:1.0625rem; color:var(--muted); max-width:44rem; margin:0 0 2rem; text-wrap:pretty; }
 .cta{ display:flex; flex-wrap:wrap; gap:.75rem; justify-content:center; position:relative; z-index:1; }
 .cta .pill:not(.solid):not(:hover){ background:var(--paper); }   /* the buttons sit in front of the rings */
 
@@ -281,6 +284,7 @@ a{ color:inherit; }
 .plan-on .services .num{ color:color-mix(in srgb, var(--ink) var(--np), var(--light)); }
 
 /* recent work: two ruled rows with the address up front */
+#work{ scroll-margin-top:5.5rem; }   /* the label clears the masthead when the hero button lands here */
 .work{ list-style:none; margin:1.25rem 0 0; padding:0; display:grid; grid-template-columns:repeat(auto-fit, minmax(15rem, 1fr)); gap:2rem clamp(1.5rem,3vw,3rem); }
 .work li{ border-top:1px solid var(--rule); padding:1.4rem 0 0; }
 .shot{ display:block; aspect-ratio:16/10; overflow:hidden; margin:0 0 1.1rem; border:1px solid var(--rule); background:#fff; }
@@ -341,7 +345,6 @@ a{ color:inherit; }
   .split{ grid-template-columns:1fr; }
   .split > .side{ position:static; }
   .plan{ width:9rem; margin-top:1.5rem; }
-  .nav a:not(.pill){ display:none; }
 }
 @media (max-width:40rem){
   .services li{ grid-template-columns:3.25rem minmax(0,1fr); }
@@ -373,12 +376,6 @@ a{ color:inherit; }
 
 <header class="masthead" id="masthead">
   <div class="logotype" aria-label="TightStack"><a href="#top" aria-label="TightStack, back to top"><span class="l">T</span><span class="l i">ı<span class="tittle" aria-hidden="true"><svg class="stack" viewBox="0 0 200 200"><g class="plate" style="--i:1"><path style="--oc:.35" d="M20 110 L100 70 L180 110 L100 150Z"/></g><g class="plate" style="--i:2"><path style="--oc:.62" d="M20 80 L100 40 L180 80 L100 120Z"/></g><g class="plate" style="--i:3"><path style="--oc:1" d="M20 50 L100 10 L180 50 L100 90Z"/></g></svg></span></span><span class="l">g</span><span class="l">h</span><span class="l">t</span><span class="l">S</span><span class="l">t</span><span class="l">a</span><span class="l">c</span><span class="l">k</span></a></div>
-  <nav class="nav later" style="--d:300">
-    <a href="#build">What we build</a>
-    <a href="#events">Events</a>
-    <a href="#work">Work</a>
-    <a class="pill" href="#touch">Get in touch <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
-  </nav>
 </header>
 
 <main id="top">
@@ -402,7 +399,7 @@ a{ color:inherit; }
     </svg></span></span><span class="l" style="--n:2">g</span><span class="l" style="--n:3">h</span><span class="l" style="--n:4">t</span><span class="l" style="--n:5">S</span><span class="l" style="--n:6">t</span><span class="l" style="--n:7">a</span><span class="l" style="--n:8">c</span><span class="l" style="--n:9">k</span></h1>
 
     <h2 class="tagline later" style="--d:0">Software that fits the job <em>and the budget</em>.</h2>
-    <p class="lede later" style="--d:120">TightStack is a small consulting studio in British Columbia. We design and build websites, registration systems and internal tools.</p>
+    <p class="lede later" style="--d:120">TightStack is a small consulting studio in British Columbia.<br>We design and build websites, registration systems and internal tools.</p>
     <div class="cta later" style="--d:240">
       <a class="pill solid" href="#touch">Tell us what you need <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
       <a class="pill" href="#work">Recent work</a>
@@ -424,8 +421,7 @@ a{ color:inherit; }
     <section class="section" id="build" aria-labelledby="build-h">
       <div class="split">
         <div class="side rise" style="--i:0">
-          <p class="label">What we build</p>
-          <h2 class="heading" id="build-h">Four kinds of work, priced to the job.</h2>
+          <p class="label" id="build-h">What we build</p>
           <div class="plan" id="plan" aria-hidden="true">
             <svg class="stack" viewBox="0 0 200 200">
               <line class="lead" x1="100" y1="-80" x2="100" y2="190"/>
@@ -461,6 +457,11 @@ a{ color:inherit; }
               <a class="shot" href="https://conference.thesa.org" tabindex="-1" aria-hidden="true"><img src="img/thesa-conference.jpg" width="960" height="600" alt="" loading="lazy"></a>
               <a class="link url" href="https://conference.thesa.org">conference.thesa.org <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
               <p>Registration and payment for the Teachers of Home Economics Specialist Association&rsquo;s annual conference, in person and online.</p>
+            </li>
+            <li>
+              <a class="shot" href="https://congres.appipc.ca" tabindex="-1" aria-hidden="true"><img src="img/congres-appipc.jpg" width="960" height="600" alt="" loading="lazy"></a>
+              <a class="link url" href="https://congres.appipc.ca">congres.appipc.ca <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 12 4M6 4h6v6"/></svg></a>
+              <p>Registration and payment for APPIPC&rsquo;s 2026 congress, built in French for BC&rsquo;s French immersion and francophone program teachers.</p>
             </li>
             <li>
               <a class="shot" href="https://bcdramafestival.com" tabindex="-1" aria-hidden="true"><img src="img/bc-drama-festival.jpg" width="960" height="600" alt="" loading="lazy"></a>
@@ -537,8 +538,11 @@ a{ color:inherit; }
 
   var tittle = document.getElementById('tittle');
   var stack  = document.getElementById('stack');
-  var quick  = false;
-  /* the full entry plays on every load; set quick = true to skip to the printed name */
+  /* the entry plays once per visitor; after that the page opens on the
+     printed name. Add ?entry to the address to watch it again. */
+  var seen = false;
+  try { seen = localStorage.getItem('ts-entry') === '1'; } catch (e) {}
+  var quick = seen && !/[?&]entry\b/.test(location.search);
   if (quick) html.classList.add('quick');
 
   function opening(){
@@ -556,6 +560,7 @@ a{ color:inherit; }
   function finish(){
     body.classList.add('go');
     html.classList.remove('entry');
+    try { localStorage.setItem('ts-entry', '1'); } catch (e) {}
     watch();
     measure();
     fxFrame();
@@ -573,12 +578,11 @@ a{ color:inherit; }
       return;
     }
     var o = opening();
-    if (quick) {                                    /* seen it this session: just print */
-      body.classList.add('close');
+    if (quick) {                                    /* seen it before: open on the printed name */
+      body.classList.add('close', 'land', 'print');
       stack.style.setProperty('--sw', o.sw1);
       tittle.style.transform = 'none';
-      setTimeout(function () { body.classList.add('print'); }, 150);
-      setTimeout(finish, 1000);
+      finish();
       return;
     }
     tittle.style.transition = 'none';               /* jump to the opening state; only the landing transitions */
