@@ -233,19 +233,6 @@ a{ color:inherit; }
 .section::before{ content:""; position:absolute; top:0; left:0; right:0; height:1px; background:var(--rule); }
 .section.flush::before{ display:none; }
 
-/* the big statement, one word at a time as it enters */
-.statement{
-  font-family:var(--display); font-weight:400;
-  font-variation-settings:"opsz" 144, "SOFT" 30, "WONK" 1;
-  font-size:clamp(1.9rem, 4.6vw, 4rem); line-height:1.08; letter-spacing:-.025em;
-  max-width:24ch; margin:0; text-wrap:balance;
-}
-.statement .w{ display:inline-block; }
-.js .statement .w{ opacity:0; transform:translateY(.35em); }
-.js .statement.in .w{ opacity:1; transform:none; transition:opacity .5s ease, transform .7s var(--ease-out); transition-delay:calc(var(--n) * 35ms); }
-.statement .q{ color:var(--muted); }
-.aside{ font-family:var(--mono); font-size:.8rem; line-height:1.7; color:var(--muted); max-width:30ch; margin:0; }
-
 .split{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.6fr); gap:clamp(1.5rem,5vw,5rem); align-items:start; }
 .split > .side{ position:sticky; top:5.5rem; }
 .heading{
@@ -272,7 +259,7 @@ a{ color:inherit; }
 .services h3{ font-family:var(--display); font-weight:400; font-variation-settings:"opsz" 48, "SOFT" 40, "WONK" 1; font-size:clamp(1.3rem,2.2vw,1.7rem); margin:0 0 .3rem; letter-spacing:-.01em; }
 .services p{ margin:0; color:var(--muted); max-width:34rem; text-wrap:pretty; }
 /* the plan: the stack drawn exploded; each kind of work read settles a plate */
-.plan{ width:min(15rem, 100%); aspect-ratio:1; margin:2.5rem 0 0; }
+.plan{ width:min(15rem, 100%); aspect-ratio:1; margin:7rem 0 0; }   /* the exploded drawing reaches .4 of its width above its box */
 .plan svg{ display:block; width:100%; height:100%; overflow:visible; }
 .plan .plate{ --open:1; transition:none; }
 .plan .plate path{ --o:1; stroke-width:1.4; }
@@ -344,7 +331,7 @@ a{ color:inherit; }
 @media (max-width:56rem){
   .split{ grid-template-columns:1fr; }
   .split > .side{ position:static; }
-  .plan{ width:9rem; margin-top:1.5rem; }
+  .plan{ width:9rem; margin-top:4.75rem; }
 }
 @media (max-width:40rem){
   .services li{ grid-template-columns:3.25rem minmax(0,1fr); }
@@ -357,7 +344,7 @@ a{ color:inherit; }
   .js .hero .l{ color:var(--ink); }
   .js .hero .stack .plate{ --open:0; }
   .js .hero .stack .plate path{ stroke-dashoffset:0; --o:var(--oc); }
-  .js .later,.js .rise,.js .statement .w{ opacity:1; transform:none; }
+  .js .later,.js .rise{ opacity:1; transform:none; }
   .js .arcs circle{ stroke-dashoffset:0; }
   .corner .bar::after{ display:none; }
   .ruler-line{ transform:scaleY(1); }
@@ -410,13 +397,6 @@ a{ color:inherit; }
   </section>
 
   <div class="wrap">
-
-    <section class="section flush" aria-label="About TightStack">
-      <div class="split">
-        <p class="aside rise" style="--i:0">A small studio. One person you can reach, who stays on the job from the first call to the last fix.</p>
-        <p class="statement" id="statement">Tell us what you need and what you can spend, <span class="q">and we will work out what fits.</span></p>
-      </div>
-    </section>
 
     <section class="section" id="build" aria-labelledby="build-h">
       <div class="split">
@@ -605,12 +585,10 @@ a{ color:inherit; }
     setTimeout(begin, 1600);
   } else { begin(); }
 
-  /* ── scroll: masthead, statement, sections ───────────── */
+  /* ── scroll: masthead, sections ───────────────────────── */
   var masthead = document.getElementById('masthead');
   var hero = document.querySelector('.hero');
-  var statement = document.getElementById('statement');
 
-  /* split the statement into words so they can arrive one at a time */
   /* ── the plan beside the list, and the rings behind the hero ── */
   var plan = document.getElementById('plan');
   var planPlates = [].slice.call(plan.querySelectorAll('.plate'));
@@ -683,31 +661,10 @@ a{ color:inherit; }
   window.addEventListener('resize', function () { measure(); fxFrame(); });
   window.addEventListener('load',   function () { measure(); fxFrame(); });
 
-  (function split(){
-    var n = 0;
-    function walk(node){
-      if (node.nodeType === 3) {
-        var frag = document.createDocumentFragment();
-        node.textContent.split(/(\s+)/).forEach(function (part) {
-          if (!part) return;
-          if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
-          var s = document.createElement('span');
-          s.className = 'w'; s.style.setProperty('--n', n++); s.textContent = part;
-          frag.appendChild(s);
-        });
-        node.parentNode.replaceChild(frag, node);
-      } else if (node.nodeType === 1) {
-        [].slice.call(node.childNodes).forEach(walk);
-      }
-    }
-    walk(statement);
-  })();
-
   function watch(){
     if (!('IntersectionObserver' in window)) {
       masthead.classList.add('scrolled');
       document.querySelectorAll('.section').forEach(function (s) { s.classList.add('in'); });
-      statement.classList.add('in');
       return;
     }
     new IntersectionObserver(function (es) {
@@ -722,7 +679,6 @@ a{ color:inherit; }
       });
     }, { rootMargin: '0px 0px -12% 0px', threshold: 0.1 });
     document.querySelectorAll('.section').forEach(function (s) { io.observe(s); });
-    io.observe(statement);
   }
 
   /* ── bot check (unchanged from the live page) ─────────── */
